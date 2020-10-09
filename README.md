@@ -30,11 +30,11 @@ Daniel Garcia Silva *up201806524@fe.up.pt*
 
 Gonçalo Alves *up201806451@fe.up.pt*
 
-Inês Silva *201806385@fe.up.pt*
+Inês Silva *up201806385@fe.up.pt*
 
-Pedro Seixas *201806227@fe.up.pt*
+Pedro Seixas *up201806227@fe.up.pt*
 
-José Silva *201705591@fe.up.pt*
+José Silva *up201705591@fe.up.pt*
 
 ---
 
