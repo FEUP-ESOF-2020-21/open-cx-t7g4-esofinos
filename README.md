@@ -1,6 +1,6 @@
-# openCX-*your module name* Development Report
+# openCX-InstantWords Development Report
 
-Welcome to the documentation pages of the *your (sub)product name* of **openCX**!
+Welcome to the documentation pages of the InstantWords of **openCX**!
 
 You can find here detailed about the (sub)product, hereby mentioned as module, from a high-level vision to low-level implementation decisions, a kind of Software Development Report (see [template](https://github.com/softeng-feup/open-cx/blob/master/docs/templates/Development-Report.md)), organized by discipline (as of RUP): 
 
@@ -26,23 +26,20 @@ Please contact us!
 
 Thank you!
 
-*team members names*
+Daniel Garcia Silva *up201806524@fe.up.pt*
+
+Gonçalo Alves *up201806451@fe.up.pt*
+
+Inês Silva *201806385@fe.up.pt*
+
+Pedro Seixas *201806227@fe.up.pt*
+
+José Silva *201705591@fe.up.pt*
 
 ---
 
 ## Product Vision
-Start by defining a clear and concise vision for your module, to help members of the team, contributors, and users into focusing their often disparate views into a concise, visual, and short textual form. It provides a "high concept" of the product for marketers, developers, and managers.
-
-A product vision describes the essential of the product and sets the direction to where a product is headed, and what the product will deliver in the future. 
-
-**We favor a catchy and concise statement, ideally one sentence.**
-
-To learn more about how to write a good product vision, please see also:
-* [How To Create A Convincing Product Vision To Guide Your Team, by uxstudioteam.com](https://uxstudioteam.com/ux-blog/product-vision/)
-* [Product Management: Product Vision, by ProductPlan](https://www.productplan.com/glossary/product-vision/)
-* [Vision, by scrumbook.org](http://scrumbook.org/value-stream/vision.html)
-* [How to write a vision, by dummies.com](https://www.dummies.com/business/marketing/branding/how-to-write-vision-and-mission-statements-for-your-brand/)
-* [20 Inspiring Vision Statement Examples (2019 Updated), by lifehack.org](https://www.lifehack.org/articles/work/20-sample-vision-statement-for-the-new-startup.html)
+Enabling everyone to experience conferences to the fullest by using speech-to-text to create real time subtitles during talks!
 
 ---
 ## Elevator Pitch
