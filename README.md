@@ -58,16 +58,44 @@ Start by contextualizing your module, describing the main concepts, terms, roles
 
 ### Use case diagram 
 
-![](https://i.imgur.com/i1zCaCf.png)
+![](https://i.imgur.com/yRGF8cH.png)
 
 
-Briefly describe each use case mentioning the following:
+#### Register
 
-* **Actor**. Name only the actor that will be initiating this use case, i.e. a person or other entity external to the software system being specified who interacts with the system and performs use cases to accomplish tasks. 
-* **Description**. Provide a brief description of the reason for and outcome of this use case, or a high-level description of the sequence of actions and the outcome of executing the use case. 
-* **Preconditions and Postconditions**. Include any activities that must take place, or any conditions that must be true, before the use case can be started (preconditions). Describe also the state of the system at the conclusion of the use case execution (postconditions). 
+* **Actor**. User.
+* **Description**. The User can register in the app and select prefered language.
+* **Preconditions and Postconditions**. The user must select which conference he is attending to select its role as a speaker or an attendee.
 
-* **Normal Flow**. Provide a detailed description of the user actions and system responses that will take place during execution of the use case under normal, expected conditions. This dialog sequence will ultimately lead to accomplishing the goal stated in the use case name and description. This is best done as a numbered list of actions performed by the actor, alternating with responses provided by the system. 
+* **Normal Flow**. 
+    i. The user registers in the app by choosing a username, email and a password.
+    ii. The user fills the prefered language settings.
+    
+* **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
+
+#### Start a livestream
+
+* **Actor**. Speaker.
+* **Description**. The speaker creates a new talk and livestreams his voice.
+* **Preconditions and Postconditions**. The speaker must select the conference before he creates a new talk. In the end, there will be a new talk the attendees can select and get the transcript of.
+
+* **Normal Flow**. 
+    i. The speaker selects which conference he is participating in.
+    ii. The speaker creates a new talk in the app.
+    iii. The speaker selects which language he will be talking in.
+    iv. The speaker starts livestreaming his voice as the session begins.
+* **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
+
+#### Get transcripts
+
+* **Actor**. Attendee.
+* **Description**. The attendee reads the transcripts from the talk he is watching in the app.
+* **Preconditions and Postconditions**. 
+
+* **Normal Flow**. 
+    i. The attendee selects the conference he is attending and the talk he is going to watch.
+    ii. The attendee reads the transcript from his phone as the speaker is talking.
+    
 * **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
 
 ### User stories
@@ -79,7 +107,80 @@ A user story is a description of desired functionality told from the perspective
 
 *As a < user role >, I want < goal > so that < reason >.*
 
+**EPIC**
+As a spectator, I want a transcript, so that I can read what is being said in the conference.
 
+**Given** I want the transcript of the current talk,
+**When** I select it on the app,
+**Then** I can read what is being said.
+
+
+
+---- 
+
+
+As a spectator, I want to attend conferences in any language, so that I have more options to attend.
+
+---
+
+As a speaker, I want to be able to select my speech language.
+
+---
+
+As an user, I want to be able to create my own account, so that I can use the app.
+
+Mockup:
+![Register/Login](https://i.imgur.com/tS6TaVE.png)
+
+---
+
+As a spectator, I want to be able to search for talks/conferences, in order to join them.
+
+Mockup Spectator Main Screen:
+![Spectator Main Menu](https://i.imgur.com/vTkurLw.png)
+
+---
+
+As a specator, I want to be able to scan a talk/workshop QR code, so that I can join it directly.
+
+---
+
+
+As an user, I want to track which conferences I attended and planned to attend, so that I can organize my schedule.
+
+![User Conferences](https://i.imgur.com/3zXCNJD.png)
+
+
+---
+
+As an user, I want to be able to logout, so that I can share my device with other people.
+
+Mockup User Logout:
+![User Logout](https://i.imgur.com/tpdq9v6.png)
+
+
+---
+
+As a speaker, I want to be able to create a talk, so that spectators can join.
+
+Mockup Speaker Main:
+![Speaker Main Menu](https://i.imgur.com/Jr3FpDh.png)
+
+
+---
+
+As a spectator, 
+
+---
+
+
+
+
+
+
+
+
+**Acceptance test
 **INVEST in good user stories**. 
 You may add more details after, but the shorter and complete, the better. In order to decide if the user story is good, please follow the [INVEST guidelines](https://xp123.com/articles/invest-in-good-stories-and-smart-tasks/).
 
@@ -90,6 +191,8 @@ After the user story text, you should add a draft of the corresponding user inte
 For each user story you should write also the acceptance tests (textually in Gherkin), i.e., a description of scenarios (situations) that will help to confirm that the system satisfies the requirements addressed by the user story.
 
 **Value and effort**.
+
+
 At the end, it is good to add a rough indication of the value of the user story to the customers (e.g. [MoSCoW](https://en.wikipedia.org/wiki/MoSCoW_method) method) and the team should add an estimation of the effort to implement it, for example, using t-shirt sizes (XS, S, M, L, XL).
 
 ### Domain model
