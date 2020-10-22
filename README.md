@@ -112,6 +112,7 @@ Then I can read what is being said.
 ```
 
 **Value:** Must have
+
 **Effort:** *To be filled*
 
 ---- 
@@ -133,6 +134,7 @@ Then I have more options of conferences to attend.
 ```
 
 **Value:** Must have
+
 **Effort:** *To be filled*
 
 ---
@@ -153,6 +155,7 @@ Then I can read what is being said in my desired language.
 ```
 
 **Value:** Must have
+
 **Effort:** *To be filled*
 
 ---
@@ -173,6 +176,7 @@ Then the spectators know which language I am speaking.
 ```
 
 **Value:** Must have
+
 **Effort:** *To be filled*
 
 ---
@@ -193,6 +197,7 @@ Then I can save my preferences.
 ```
 
 **Value:** Should have
+
 **Effort:** *To be filled*
 
 ---
@@ -213,6 +218,7 @@ Then I can join the talks/conferences.
 ```
 
 **Value:** Could have
+
 **Effort:** *To be filled*
 
 ---
@@ -234,6 +240,7 @@ Then I can join it directly.
 ```
 
 **Value:** Should have
+
 **Effort:** *To be filled*
 
 ---
@@ -254,6 +261,7 @@ Then I can organize my schedule.
 ```
 
 **Value:** Could have
+
 **Effort:** *To be filled*
 
 ---
@@ -274,6 +282,7 @@ Then I can share my device with other people.
 ```
 
 **Value:** Should have
+
 **Effort:** *To be filled*
 
 ---
@@ -294,6 +303,7 @@ Then Spectators can join my session and read the transcript.
 ```
 
 **Value:** Should have
+
 **Effort:** *To be filled*
 
 ---
