@@ -52,10 +52,6 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 ---
 ## Requirements
 
-In this section, you should describe all kinds of requirements for your module: functional and non-functional requirements.
-
-Start by contextualizing your module, describing the main concepts, terms, roles, scope and boundaries of the application domain addressed by the project.
-
 ### Use case diagram 
 
 ![](https://i.imgur.com/yRGF8cH.png)
@@ -73,7 +69,7 @@ Start by contextualizing your module, describing the main concepts, terms, roles
     
 * **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
 
-#### Start a livestream
+#### Start conference/talk
 
 * **Actor**. Speaker.
 * **Description**. The speaker creates a new talk and livestreams his voice.
@@ -99,6 +95,201 @@ Start by contextualizing your module, describing the main concepts, terms, roles
 * **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
 
 ### User stories
+
+#### Story #1 **EPIC**
+
+As a spectator, I want a transcript, so that I can read what is being said in the conference.
+
+**Mockup**
+![Conference Transcript](https://i.imgur.com/OGJxRMK.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want the transcript of the current talk,
+When I select it on the app,
+Then I can read what is being said.
+```
+
+**Value:** Must have
+**Effort:** *To be filled*
+
+---- 
+
+#### Story #2
+
+As a spectator, I want to attend conferences in any language, so that I have more options to attend.
+
+**Mockup**
+![Language Search](https://i.imgur.com/c14bkOT.png)
+
+
+**Acceptance Tests**
+```gherkin
+Given I want to understand what is being said,
+When I attend a conference in any language,
+Then I have more options of conferences to attend.
+```
+
+**Value:** Must have
+**Effort:** *To be filled*
+
+---
+
+#### Story #3
+
+As a spectator, I want to select the transcript language, so that I can read what is being said in my desired language.
+
+**Mockup**
+![Conference Transcript](https://i.imgur.com/OGJxRMK.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to select the transcript language,
+When I attend a conference,
+Then I can read what is being said in my desired language.
+```
+
+**Value:** Must have
+**Effort:** *To be filled*
+
+---
+
+#### Story #4
+
+As a speaker, I want to be able to select my speech language.
+
+**Mockup**
+![Speaker Language Select](https://i.imgur.com/5xAZGas.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to be able to select my language,
+When I start the conference,
+Then the spectators know which language I am speaking.
+```
+
+**Value:** Must have
+**Effort:** *To be filled*
+
+---
+
+#### Story #5
+
+As an user, I want to be able to create my own account, so that I can use the app.
+
+**Mockup**
+![Main Menu](https://i.imgur.com/1vmbEy5.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to be able to create my own account,
+When I use the app,
+Then I can save my preferences.
+```
+
+**Value:** Should have
+**Effort:** *To be filled*
+
+---
+
+#### Story #6
+
+As a spectator, I want to be able to search for talks/conferences, in order to join them.
+
+**Mockup**
+![Spectator Main Menu](https://i.imgur.com/vTkurLw.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to search for talks/conferences,
+When I´m using the app
+Then I can join the talks/conferences.
+```
+
+**Value:** Could have
+**Effort:** *To be filled*
+
+---
+
+#### Story #7
+
+As a specator, I want to be able to scan a talk/workshop QR code, so that I can join it directly.
+
+**Mockup**
+![QRCode](https://i.imgur.com/zBhBekv.png)
+
+
+**Acceptance Tests**
+```gherkin
+Given I want to be able to scan a talk/worlshop QR code,
+When I'm attending one,
+Then I can join it directly.
+```
+
+**Value:** Should have
+**Effort:** *To be filled*
+
+---
+
+#### Story #8
+
+As an user, I want to track which conferences I attended and planned to attend, so that I can organize my schedule.
+
+**Mockup**
+![User Conferences](https://i.imgur.com/3zXCNJD.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to track which conferences I attended and plan to attend,
+When I'm using the app,
+Then I can organize my schedule.
+```
+
+**Value:** Could have
+**Effort:** *To be filled*
+
+---
+
+#### Story #9
+
+As an user, I want to be able to logout, so that I can share my device with other people.
+
+**Mockup**
+![User Logout](https://i.imgur.com/tpdq9v6.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to be able to logout,
+When I'm logged in the app,
+Then I can share my device with other people.
+```
+
+**Value:** Should have
+**Effort:** *To be filled*
+
+---
+
+#### Story #10
+
+As a speaker, I want to be able to create a talk, so that spectators can join.
+
+**Mockup**
+![Speaker Main Menu](https://i.imgur.com/Jr3FpDh.png)
+
+**Acceptance Tests**
+```gherkin
+Given I want to be able to create a talk,
+When I'm speaking at a conference,
+Then Spectators can join my session and read the transcript.
+```
+
+**Value:** Should have
+**Effort:** *To be filled*
+
+---
+
+
+
 This section will contain the requirements of the product described as **user stories**, organized in a global **[user story map](https://plan.io/blog/user-story-mapping/)** with **user roles** or **themes**.
 
 For each theme, or role, you may add a small description. User stories should be detailed in the tool you decided to use for project management (e.g. trello or github projects).
@@ -107,80 +298,6 @@ A user story is a description of desired functionality told from the perspective
 
 *As a < user role >, I want < goal > so that < reason >.*
 
-**EPIC**
-As a spectator, I want a transcript, so that I can read what is being said in the conference.
-
-**Given** I want the transcript of the current talk,
-**When** I select it on the app,
-**Then** I can read what is being said.
-
-
-
----- 
-
-
-As a spectator, I want to attend conferences in any language, so that I have more options to attend.
-
----
-
-As a speaker, I want to be able to select my speech language.
-
----
-
-As an user, I want to be able to create my own account, so that I can use the app.
-
-Mockup:
-![Register/Login](https://i.imgur.com/tS6TaVE.png)
-
----
-
-As a spectator, I want to be able to search for talks/conferences, in order to join them.
-
-Mockup Spectator Main Screen:
-![Spectator Main Menu](https://i.imgur.com/vTkurLw.png)
-
----
-
-As a specator, I want to be able to scan a talk/workshop QR code, so that I can join it directly.
-
----
-
-
-As an user, I want to track which conferences I attended and planned to attend, so that I can organize my schedule.
-
-![User Conferences](https://i.imgur.com/3zXCNJD.png)
-
-
----
-
-As an user, I want to be able to logout, so that I can share my device with other people.
-
-Mockup User Logout:
-![User Logout](https://i.imgur.com/tpdq9v6.png)
-
-
----
-
-As a speaker, I want to be able to create a talk, so that spectators can join.
-
-Mockup Speaker Main:
-![Speaker Main Menu](https://i.imgur.com/Jr3FpDh.png)
-
-
----
-
-As a spectator, 
-
----
-
-
-
-
-
-
-
-
-**Acceptance test
 **INVEST in good user stories**. 
 You may add more details after, but the shorter and complete, the better. In order to decide if the user story is good, please follow the [INVEST guidelines](https://xp123.com/articles/invest-in-good-stories-and-smart-tasks/).
 
