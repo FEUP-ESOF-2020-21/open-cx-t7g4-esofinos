@@ -1,117 +1,206 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-void main() {
-  runApp(MyApp());
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:speech_to_text/speech_recognition_event.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+import 'package:speech_to_text/speech_to_text_provider.dart';
+
+void main() => runApp(ProviderDemoApp());
+
+class ProviderDemoApp extends StatefulWidget {
+  @override
+  _ProviderDemoAppState createState() => _ProviderDemoAppState();
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class _ProviderDemoAppState extends State<ProviderDemoApp> {
+  final SpeechToText speech = SpeechToText();
+  SpeechToTextProvider speechProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    speechProvider = SpeechToTextProvider(speech);
+    initSpeechState();
+  }
+
+  Future<void> initSpeechState() async {
+    await speechProvider.initialize();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider<SpeechToTextProvider>.value(
+      value: speechProvider,
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('InstantWords'),
+          ),
+          body: SpeechProviderExampleWidget(),
+        ),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class SpeechProviderExampleWidget extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _SpeechProviderExampleWidgetState createState() =>
+      _SpeechProviderExampleWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+class _SpeechProviderExampleWidgetState
+    extends State<SpeechProviderExampleWidget> {
+  String _currentLocaleId = "";
+  int _state = 0;
+  void _setCurrentLocale(SpeechToTextProvider speechProvider) {
+    if (speechProvider.isAvailable && _currentLocaleId.isEmpty) {
+      _currentLocaleId = speechProvider.systemLocale.localeId;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+    var speechProvider = Provider.of<SpeechToTextProvider>(context);
+
+    if (speechProvider.isNotAvailable) {
+      return Center(
+        child: Text(
+            'Speech recognition not available, no permission or not available on the device.'),
+      );
+    }
+    _setCurrentLocale(speechProvider);
+    return Column(children: [
+      Container(
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                FloatingActionButton(
+                  child: Icon(
+                      !speechProvider.isAvailable || speechProvider.isListening
+                          ? Icons.mic
+                          : Icons.mic_none),
+                  onPressed: () => _listen(speechProvider),
+                ),
+                FloatingActionButton(
+                  child: Text('Stop'),
+                  onPressed: speechProvider.isListening
+                      ? () => speechProvider.stop()
+                      : null,
+                ),
+                FloatingActionButton(
+                  child: Text('Cancel'),
+                  onPressed: speechProvider.isListening
+                      ? () => speechProvider.cancel()
+                      : null,
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                DropdownButton(
+                  onChanged: (selectedVal) => _switchLang(selectedVal),
+                  value: _currentLocaleId,
+                  items: speechProvider.locales
+                      .map(
+                        (localeName) => DropdownMenuItem(
+                          value: localeName.localeId,
+                          child: Text(localeName.name),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+      Expanded(
+        flex: 4,
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Text(
+                'Recognized Words',
+                style: TextStyle(fontSize: 22.0),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).selectedRowColor,
+                child: Center(
+                  child: speechProvider.hasResults
+                      ? Text(
+                          speechProvider.lastResult.recognizedWords,
+                          textAlign: TextAlign.center,
+                        )
+                      : Container(),
+                ),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+      Expanded(
+        flex: 1,
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Text(
+                'Error Status',
+                style: TextStyle(fontSize: 22.0),
+              ),
+            ),
+            Center(
+              child: speechProvider.hasError
+                  ? Text(speechProvider.lastError.errorMsg)
+                  : Container(),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        color: Theme.of(context).backgroundColor,
+        child: Center(
+          child: speechProvider.isListening
+              ? Text(
+                  "I'm listening...",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              : Text(
+                  'Not listening',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+        ),
+      ),
+    ]);
+  }
+
+  _switchLang(selectedVal) {
+    setState(() {
+      _currentLocaleId = selectedVal;
+    });
+    print(selectedVal);
+  }
+
+  _listen(speechProvider) {
+    speechProvider.listen(
+              partialResults: true, localeId: _currentLocaleId);
+    StreamSubscription<SpeechRecognitionEvent> _subscription;
+    _subscription = speechProvider.stream.listen((recognitionEvent) async {
+      switch (recognitionEvent.eventType) {
+        case SpeechRecognitionEventType.finalRecognitionEvent:
+          speechProvider.listen(
+              partialResults: true, localeId: _currentLocaleId);
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
