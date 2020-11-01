@@ -57,7 +57,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 ![](https://i.imgur.com/VZG0f98.png)
 
 
-#### Register
+#### Register/Login
 
 * **Actor**. User.
 * **Description**. The User can register in the app and select prefered language.
@@ -101,7 +101,6 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 As a spectator, I want a transcript, so that I can read what is being said in the conference.
 
 **Mockup**
-
 ![Conference Transcript](https://i.imgur.com/OGJxRMK.png)
 
 **Acceptance Tests**
@@ -112,7 +111,6 @@ Then I can read what is being said.
 ```
 
 **Value:** Must have
-
 **Effort:** *To be filled*
 
 ---- 
@@ -122,7 +120,6 @@ Then I can read what is being said.
 As a spectator, I want to attend conferences in any language, so that I have more options to attend.
 
 **Mockup**
-
 ![Language Search](https://i.imgur.com/c14bkOT.png)
 
 
@@ -134,7 +131,6 @@ Then I have more options of conferences to attend.
 ```
 
 **Value:** Must have
-
 **Effort:** *To be filled*
 
 ---
@@ -144,7 +140,6 @@ Then I have more options of conferences to attend.
 As a spectator, I want to select the transcript language, so that I can read what is being said in my desired language.
 
 **Mockup**
-
 ![Conference Transcript](https://i.imgur.com/OGJxRMK.png)
 
 **Acceptance Tests**
@@ -155,7 +150,6 @@ Then I can read what is being said in my desired language.
 ```
 
 **Value:** Must have
-
 **Effort:** *To be filled*
 
 ---
@@ -165,7 +159,6 @@ Then I can read what is being said in my desired language.
 As a speaker, I want to be able to select my speech language.
 
 **Mockup**
-
 ![Speaker Language Select](https://i.imgur.com/5xAZGas.png)
 
 **Acceptance Tests**
@@ -176,7 +169,6 @@ Then the spectators know which language I am speaking.
 ```
 
 **Value:** Must have
-
 **Effort:** *To be filled*
 
 ---
@@ -186,7 +178,6 @@ Then the spectators know which language I am speaking.
 As an user, I want to be able to create my own account, so that I can use the app.
 
 **Mockup**
-
 ![Main Menu](https://i.imgur.com/1vmbEy5.png)
 
 **Acceptance Tests**
@@ -197,7 +188,6 @@ Then I can save my preferences.
 ```
 
 **Value:** Should have
-
 **Effort:** *To be filled*
 
 ---
@@ -207,7 +197,6 @@ Then I can save my preferences.
 As a spectator, I want to be able to search for talks/conferences, in order to join them.
 
 **Mockup**
-
 ![Spectator Main Menu](https://i.imgur.com/vTkurLw.png)
 
 **Acceptance Tests**
@@ -218,7 +207,6 @@ Then I can join the talks/conferences.
 ```
 
 **Value:** Could have
-
 **Effort:** *To be filled*
 
 ---
@@ -228,7 +216,6 @@ Then I can join the talks/conferences.
 As a specator, I want to be able to scan a talk/workshop QR code, so that I can join it directly.
 
 **Mockup**
-
 ![QRCode](https://i.imgur.com/zBhBekv.png)
 
 
@@ -240,7 +227,6 @@ Then I can join it directly.
 ```
 
 **Value:** Should have
-
 **Effort:** *To be filled*
 
 ---
@@ -250,7 +236,6 @@ Then I can join it directly.
 As an user, I want to track which conferences I attended and planned to attend, so that I can organize my schedule.
 
 **Mockup**
-
 ![User Conferences](https://i.imgur.com/3zXCNJD.png)
 
 **Acceptance Tests**
@@ -261,7 +246,6 @@ Then I can organize my schedule.
 ```
 
 **Value:** Could have
-
 **Effort:** *To be filled*
 
 ---
@@ -271,7 +255,6 @@ Then I can organize my schedule.
 As an user, I want to be able to logout, so that I can share my device with other people.
 
 **Mockup**
-
 ![User Logout](https://i.imgur.com/tpdq9v6.png)
 
 **Acceptance Tests**
@@ -282,7 +265,6 @@ Then I can share my device with other people.
 ```
 
 **Value:** Should have
-
 **Effort:** *To be filled*
 
 ---
@@ -292,7 +274,6 @@ Then I can share my device with other people.
 As a speaker, I want to be able to create a talk, so that spectators can join.
 
 **Mockup**
-
 ![Speaker Main Menu](https://i.imgur.com/Jr3FpDh.png)
 
 **Acceptance Tests**
@@ -303,7 +284,6 @@ Then Spectators can join my session and read the transcript.
 ```
 
 **Value:** Should have
-
 **Effort:** *To be filled*
 
 ---
@@ -354,10 +334,16 @@ It can be beneficial to present the system both in a horizontal or vertical deco
 * horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
 * vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
 
+![Logical architecture](https://i.imgur.com/GH7Gjdq.png)
+
 ### Physical architecture
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+
+![Physical architecture](https://i.imgur.com/CWGckYj.png)
+
+
 
 ### Prototype
 To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
