@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "140151623167",
+    "firebase_url": "https://instantwords-e62b5.firebaseio.com",
+    "project_id": "instantwords-e62b5",
+    "storage_bucket": "instantwords-e62b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140151623167:android:50b81444bda96b4d7a2bca",
+        "android_client_info": {
+          "package_name": "com.example.instantwords"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140151623167-0lt919j92q0m1qlgh0akajlfbv6plios.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZXMfDXOb5mnchIS-zJxig8hVO65-0Hmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140151623167-0lt919j92q0m1qlgh0akajlfbv6plios.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

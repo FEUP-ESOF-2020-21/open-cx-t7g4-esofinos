@@ -61,9 +61,15 @@ class _SpeechProviderExampleWidgetState
     extends State<SpeechProviderExampleWidget> {
   String _currentLocaleId = "";
   void _setCurrentLocale(SpeechToTextProvider speechProvider) {
+    //MUST FIX - LOCALE ID NULL ON LOGOOUT AND LOGIN
     if (speechProvider.isAvailable && _currentLocaleId.isEmpty) {
-      if (speechProvider.systemLocale.localeId.isNotEmpty)
-        _currentLocaleId = speechProvider.systemLocale.localeId;
+      try {
+        if (speechProvider.systemLocale.localeId.isNotEmpty)
+          _currentLocaleId = speechProvider.systemLocale.localeId;
+      } catch (e) {
+        print(e);
+        _currentLocaleId = "en_GB";
+      }
     }
   }
 

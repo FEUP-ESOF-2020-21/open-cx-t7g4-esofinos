@@ -1,5 +1,7 @@
 part of 'main.dart';
 
+UserCredential userCredential;
+
 class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => new _LoginPageState();
@@ -11,6 +13,7 @@ enum FormType { login, register }
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
+
   String _email = "";
   String _password = "";
   FormType _form = FormType
@@ -135,14 +138,48 @@ class _LoginPageState extends State<LoginPage> {
 
   void _loginPressed() {
     print('The user wants to login with $_email and $_password');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ProviderDemoApp()),
-    );
+    loginAccount();
+  }
+
+  Future<void> loginAccount() async {
+    try {
+      userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProviderDemoApp()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 
   void _createAccountPressed() {
     print('The user wants to create an accoutn with $_email and $_password');
+    createAccount();
+  }
+
+  Future<void> createAccount() async {
+    try {
+      userCredential=await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: _email, password: _password);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProviderDemoApp()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void _passwordReset() {
@@ -163,7 +200,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _getEmail() {
-    _email = "EMAIL TO GET FROM FIREBASE";
+    _email = userCredential.user.email;
   }
 
   @override
@@ -197,7 +234,7 @@ class _AccountPageState extends State<AccountPage> {
             backgroundImage: AssetImage('img/antonio_costa.jpg'),
             radius: 200,
           ),
-          Text(_email,textScaleFactor: 1.5),
+          Text(_email, textScaleFactor: 1.5),
         ],
       ),
     );
@@ -211,18 +248,22 @@ class _AccountPageState extends State<AccountPage> {
             width: 300.0,
             height: 50.0,
             child: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0))),
               heroTag: "btn1",
-              label: Text('LOGOUT',textScaleFactor: 2.0,),
-              onPressed: () {
+              label: Text(
+                'LOGOUT',
+                textScaleFactor: 2.0,
+              ),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               elevation: 10.0,
             ),
-            
           ),
         ],
       ),
