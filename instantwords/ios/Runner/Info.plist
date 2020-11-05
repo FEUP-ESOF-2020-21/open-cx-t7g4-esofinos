@@ -45,5 +45,7 @@
 	<string>Recognize and Display Speech Input</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Detect Speech Input</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Permission to access photo gallery</string>
 </dict>
 </plist>

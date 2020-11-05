@@ -1,14 +1,14 @@
 part of 'main.dart';
 
-UserCredential userCredential;
-
 class LoginPage extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  LoginPage(this._fireStore, this._storage);
+
   @override
   State<LoginPage> createState() => new _LoginPageState();
 }
-
-// Used for controlling whether the user is loggin or creating an account
-enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailFilter = new TextEditingController();
@@ -16,8 +16,6 @@ class _LoginPageState extends State<LoginPage> {
 
   String _email = "";
   String _password = "";
-  FormType _form = FormType
-      .login; // our default setting is to login, and we should switch to creating an account when the user chooses to
 
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
@@ -38,17 +36,6 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       _password = _passwordFilter.text;
     }
-  }
-
-  // Swap in between our two forms, registering and logging in
-  void _formChange() async {
-    setState(() {
-      if (_form == FormType.register) {
-        _form = FormType.login;
-      } else {
-        _form = FormType.register;
-      }
-    });
   }
 
   @override
@@ -81,12 +68,14 @@ class _LoginPageState extends State<LoginPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
+              keyboardType: TextInputType.emailAddress,
               decoration: new InputDecoration(labelText: 'Email'),
             ),
           ),
           new Container(
             child: new TextField(
               controller: _passwordFilter,
+              keyboardType: TextInputType.visiblePassword,
               decoration: new InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
@@ -97,89 +86,43 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildButtons() {
-    if (_form == FormType.login) {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new RaisedButton(
-              child: new Text('Login'),
-              onPressed: _loginPressed,
-            ),
-            new FlatButton(
-              child: new Text('Dont have an account? Tap here to register.'),
-              onPressed: _formChange,
-            ),
-            new FlatButton(
-              child: new Text('Forgot Password?'),
-              onPressed: _passwordReset,
-            )
-          ],
-        ),
-      );
-    } else {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new RaisedButton(
-              child: new Text('Create an Account'),
-              onPressed: _createAccountPressed,
-            ),
-            new FlatButton(
-              child: new Text('Have an account? Click here to login.'),
-              onPressed: _formChange,
-            )
-          ],
-        ),
-      );
-    }
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new RaisedButton(
+            child: new Text('Login'),
+            onPressed: _loginPressed,
+          ),
+          new FlatButton(
+            child: new Text('Dont have an account? Tap here to register.'),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          RegisterPage(widget._fireStore, widget._storage)));
+            },
+          ),
+          new FlatButton(
+            child: new Text('Forgot Password?'),
+            onPressed: _passwordReset,
+          )
+        ],
+      ),
+    );
   }
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed() {
     print('The user wants to login with $_email and $_password');
-    loginAccount();
-  }
-
-  Future<void> loginAccount() async {
-    try {
-      userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email, password: _password);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProviderDemoApp()),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-
-  void _createAccountPressed() {
-    print('The user wants to create an accoutn with $_email and $_password');
-    createAccount();
-  }
-
-  Future<void> createAccount() async {
-    try {
-      userCredential=await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: _email, password: _password);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProviderDemoApp()),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
+    context.read<FireAuth>().loginAccount(email: _email, password: _password);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ProviderDemoApp(widget._fireStore, widget._storage)),
+    );
   }
 
   void _passwordReset() {
@@ -188,20 +131,15 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class AccountPage extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  AccountPage(this._fireStore, this._storage);
   @override
   State<AccountPage> createState() => new _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String _email = "";
-
-  _AccountPageState() {
-    _getEmail();
-  }
-
-  void _getEmail() {
-    _email = userCredential.user.email;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,10 +169,12 @@ class _AccountPageState extends State<AccountPage> {
       child: new Column(
         children: <Widget>[
           CircleAvatar(
-            backgroundImage: AssetImage('img/antonio_costa.jpg'),
+            backgroundImage:
+                NetworkImage(context.watch<FireAuth>().currentUser.photoURL?? "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
             radius: 200,
           ),
-          Text(_email, textScaleFactor: 1.5),
+          Text(context.watch<FireAuth>().currentUser.email, textScaleFactor: 1.5),
+          Text(context.watch<FireAuth>().currentUser.displayName, textScaleFactor: 1.5),
         ],
       ),
     );
@@ -256,10 +196,12 @@ class _AccountPageState extends State<AccountPage> {
                 textScaleFactor: 2.0,
               ),
               onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.push(
+                context.read<FireAuth>().signOut();
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(widget._fireStore, widget._storage)),
                 );
               },
               elevation: 10.0,
@@ -267,6 +209,172 @@ class _AccountPageState extends State<AccountPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RegisterPage extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  RegisterPage(this._fireStore, this._storage);
+
+  @override
+  State<RegisterPage> createState() => new _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _emailFilter = new TextEditingController();
+  final TextEditingController _passwordFilter = new TextEditingController();
+  final TextEditingController _usernameFilter = new TextEditingController();
+
+  String _email = "";
+  String _password = "";
+  String _username = "";
+  String profileImg =
+      "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg";
+  String profileImgPath;
+  _RegisterPageState() {
+    _emailFilter.addListener(_emailListen);
+    _passwordFilter.addListener(_passwordListen);
+    _usernameFilter.addListener(_usernameListen);
+  }
+
+  void _emailListen() {
+    if (_emailFilter.text.isEmpty) {
+      _email = "";
+    } else {
+      _email = _emailFilter.text;
+    }
+  }
+
+  void _passwordListen() {
+    if (_passwordFilter.text.isEmpty) {
+      _password = "";
+    } else {
+      _password = _passwordFilter.text;
+    }
+  }
+
+  void _usernameListen() {
+    if (_usernameFilter.text.isEmpty) {
+      _username = "";
+    } else {
+      _username = _usernameFilter.text;
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    //TODO add user id to path
+    profileImgPath = 'profiles/' + context.read<FireAuth>().currentUser.uid;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: _buildBar(context),
+      body: new Container(
+        padding: EdgeInsets.all(16.0),
+        child: new Column(
+          children: <Widget>[
+            _buildTextFields(),
+            _buildButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBar(BuildContext context) {
+    return new AppBar(
+      title: new Text("InstantWords Registration"),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildTextFields() {
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            child: new TextField(
+              controller: _emailFilter,
+              decoration: new InputDecoration(labelText: 'Email'),
+            ),
+          ),
+          new Container(
+            child: new TextField(
+              controller: _passwordFilter,
+              decoration: new InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+          ),
+          new Container(
+            child: new TextField(
+              controller: _usernameFilter,
+              decoration: new InputDecoration(labelText: 'Username'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtons() {
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new RaisedButton(
+            child: new Text('Upload Photo'),
+            onPressed: _uploadPressed,
+          ),
+          new RaisedButton(
+            child: new Text('Create an Account'),
+            onPressed: _createAccountPressed,
+          ),
+          new FlatButton(
+            child: new Text('Have an account? Click here to login.'),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(widget._fireStore, widget._storage)));
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _uploadPressed() {
+    widget._storage.uploadImage(profileImgPath);
+    
+  }
+
+  // These functions can self contain any user auth logic required, they all have access to _email and _password
+
+  Future<void> _createAccountPressed() async {
+    print('The user wants to create an accoutn with $_email and $_password');
+    String pURL = await widget._storage.storage
+                    .ref()
+                    .child(profileImgPath)
+                    .getDownloadURL() ?? profileImg;
+                    
+    context.read<FireAuth>().register(
+        email: _email,
+        password: _password,
+        displayName: _username,
+        photoURL: pURL
+        );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ProviderDemoApp(widget._fireStore, widget._storage)),
     );
   }
 }

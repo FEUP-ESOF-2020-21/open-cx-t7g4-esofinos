@@ -1,12 +1,20 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_recognition_event.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
+part 'firebase.dart';
+part 'widgets.dart';
 part 'speechtotext.dart';
 part 'login.dart';
 
@@ -34,11 +42,7 @@ class MyApp extends StatelessWidget {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return new MaterialApp(
-            title: 'InstantWords Login',
-            theme: new ThemeData(primarySwatch: Colors.blue),
-            home: new LoginPage(),
-          );
+          return InstantWordsApp();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
@@ -46,6 +50,31 @@ class MyApp extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.deepPurple),
         );
       },
+    );
+  }
+}
+
+class InstantWordsApp extends StatelessWidget {
+  final FireStore firestore = FireStore();
+  final FireStorage storage = FireStorage();
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<FireAuth>(
+          create: (context) => FireAuth(),
+        ),
+        StreamProvider(
+          create: (context) => context.read<FireAuth>().authStateChanges,
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'InstantWords Login',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: LoginPage(firestore,storage),
+      ),
     );
   }
 }

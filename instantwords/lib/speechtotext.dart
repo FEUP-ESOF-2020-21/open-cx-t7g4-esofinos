@@ -1,8 +1,14 @@
 part of 'main.dart';
 
 class ProviderDemoApp extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  ProviderDemoApp(this._fireStore, this._storage);
+
   @override
-  _ProviderDemoAppState createState() => _ProviderDemoAppState();
+  _ProviderDemoAppState createState() =>
+      new _ProviderDemoAppState();
 }
 
 class _ProviderDemoAppState extends State<ProviderDemoApp> {
@@ -26,24 +32,7 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
       value: speechProvider,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('InstantWords'),
-            actions: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AccountPage()),
-                  );
-                },
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('img/antonio_costa.jpg'),
-                  radius: 50,
-                ),
-              ),
-            ],
-            elevation: 50.0,
-          ),
+          appBar: AppBarWidget(widget._fireStore,widget._storage),
           body: SpeechProviderExampleWidget(),
         ),
       ),
