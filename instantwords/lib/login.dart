@@ -140,7 +140,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -169,12 +168,17 @@ class _AccountPageState extends State<AccountPage> {
       child: new Column(
         children: <Widget>[
           CircleAvatar(
-            backgroundImage:
-                NetworkImage(context.watch<FireAuth>().currentUser.photoURL?? "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
+            backgroundImage: NetworkImage(context
+                    .watch<FireAuth>()
+                    .currentUser
+                    .photoURL ??
+                "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
             radius: 200,
           ),
-          Text(context.watch<FireAuth>().currentUser.email, textScaleFactor: 1.5),
-          Text(context.watch<FireAuth>().currentUser.displayName, textScaleFactor: 1.5),
+          Text(context.watch<FireAuth>().currentUser.email,
+              textScaleFactor: 1.5),
+          Text(context.watch<FireAuth>().currentUser.displayName,
+              textScaleFactor: 1.5),
         ],
       ),
     );
@@ -268,8 +272,7 @@ class _RegisterPageState extends State<RegisterPage> {
   initState() {
     super.initState();
 
-    //TODO add user id to path
-    profileImgPath = 'profiles/' + context.read<FireAuth>().currentUser.uid;
+    profileImgPath = 'profiles/';
   }
 
   @override
@@ -351,8 +354,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _uploadPressed() {
+    profileImgPath += _username;
     widget._storage.uploadImage(profileImgPath);
-    
   }
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
@@ -360,16 +363,13 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _createAccountPressed() async {
     print('The user wants to create an accoutn with $_email and $_password');
     String pURL = await widget._storage.storage
-                    .ref()
-                    .child(profileImgPath)
-                    .getDownloadURL() ?? profileImg;
-                    
-    context.read<FireAuth>().register(
-        email: _email,
-        password: _password,
-        displayName: _username,
-        photoURL: pURL
-        );
+            .ref()
+            .child(profileImgPath)
+            .getDownloadURL() ??
+        profileImg;
+    context
+        .read<FireAuth>()
+        .register(email: _email, password: _password, displayName: _username, photoURL: pURL);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
