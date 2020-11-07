@@ -30,11 +30,20 @@ class FireStorage {
         print(downloadURL);
       } else {
         print('No path Received');
-        
       }
     } else {
       print('Grant permission and try again!');
     }
+  }
+
+  updateConference(document, newValues) {
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(document)
+        .update(newValues)
+        .catchError((error) {
+      print(error);
+    });
   }
 }
 
