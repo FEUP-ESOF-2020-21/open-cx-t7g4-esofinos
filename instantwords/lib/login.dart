@@ -121,7 +121,8 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              ProviderDemoApp(widget._fireStore, widget._storage)),
+              Dashboard(widget._fireStore, widget._storage)),
+              //ProviderDemoApp(widget._fireStore, widget._storage)),
     );
   }
 
@@ -374,6 +375,7 @@ class _RegisterPageState extends State<RegisterPage> {
       context,
       MaterialPageRoute(
           builder: (context) =>
+              //Dashboard()),
               ProviderDemoApp(widget._fireStore, widget._storage)),
     );
   }

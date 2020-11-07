@@ -17,6 +17,7 @@ part 'firebase.dart';
 part 'widgets.dart';
 part 'speechtotext.dart';
 part 'login.dart';
+part 'dashboard.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +74,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore,storage),
+        home: LoginPage(firestore, storage),
       ),
     );
   }
