@@ -3,36 +3,23 @@ part of 'main.dart';
 class ProviderDemoApp extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
 
-  ProviderDemoApp(this._fireStore, this._storage);
+  ProviderDemoApp(this._fireStore, this._storage, this._speechProvider);
 
   @override
-  _ProviderDemoAppState createState() =>
-      new _ProviderDemoAppState();
+  _ProviderDemoAppState createState() => new _ProviderDemoAppState();
 }
 
 class _ProviderDemoAppState extends State<ProviderDemoApp> {
-  final SpeechToText speech = SpeechToText();
-  SpeechToTextProvider speechProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    speechProvider = SpeechToTextProvider(speech);
-    initSpeechState();
-  }
-
-  Future<void> initSpeechState() async {
-    await speechProvider.initialize();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
-      value: speechProvider,
+      value: widget._speechProvider,
       child: MaterialApp(
         home: Scaffold(
-          appBar: AppBarWidget(widget._fireStore,widget._storage),
+          appBar: AppBarWidget(
+              widget._fireStore, widget._storage, widget._speechProvider),
           body: SpeechProviderExampleWidget(),
         ),
       ),
@@ -53,6 +40,7 @@ class _SpeechProviderExampleWidgetState
     //MUST FIX - LOCALE ID NULL ON LOGOOUT AND LOGIN
     if (speechProvider.isAvailable && _currentLocaleId.isEmpty) {
       try {
+        print(speechProvider);
         if (speechProvider.systemLocale.localeId.isNotEmpty)
           _currentLocaleId = speechProvider.systemLocale.localeId;
       } catch (e) {

@@ -58,8 +58,17 @@ class InstantWordsApp extends StatelessWidget {
   final FireStore firestore = FireStore();
   final FireStorage storage = FireStorage();
 
+  final SpeechToTextProvider speechProvider =
+      SpeechToTextProvider(SpeechToText());
+
+  Future<void> initSpeechState() async {
+    print("Initializing speechProvider!");
+    await speechProvider.initialize();
+  }
+
   @override
   Widget build(BuildContext context) {
+    initSpeechState();
     return MultiProvider(
       providers: [
         Provider<FireAuth>(
@@ -73,7 +82,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore,storage),
+        home: LoginPage(firestore, storage, speechProvider),
       ),
     );
   }
