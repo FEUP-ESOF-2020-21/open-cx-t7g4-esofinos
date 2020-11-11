@@ -30,11 +30,25 @@ class FireStorage {
         print(downloadURL);
       } else {
         print('No path Received');
-        
       }
     } else {
       print('Grant permission and try again!');
     }
+  }
+
+  addConference(conferenceName, language) {
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(conferenceName)
+        .set({'language': language, 'text': ""})
+        .then((value) => print("Conferemce Added"))
+        .catchError((error) => print("Failed to add conference: $error"));
+  }
+
+  Future<List<QueryDocumentSnapshot>> getConferences() async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection("conferences").get();
+    return snapshot.docs;
   }
 }
 

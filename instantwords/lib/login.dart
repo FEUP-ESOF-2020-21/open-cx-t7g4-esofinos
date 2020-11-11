@@ -3,8 +3,9 @@ part of 'main.dart';
 class LoginPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
 
-  LoginPage(this._fireStore, this._storage);
+  LoginPage(this._fireStore, this._storage, this._speechProvider);
 
   @override
   State<LoginPage> createState() => new _LoginPageState();
@@ -99,8 +100,8 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          RegisterPage(widget._fireStore, widget._storage)));
+                      builder: (context) => RegisterPage(widget._fireStore,
+                          widget._storage, widget._speechProvider)));
             },
           ),
           new FlatButton(
@@ -120,9 +121,8 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              Dashboard(widget._fireStore, widget._storage)),
-              //ProviderDemoApp(widget._fireStore, widget._storage)),
+          builder: (context) => Dashboard(
+              widget._fireStore, widget._storage, widget._speechProvider)),
     );
   }
 
@@ -134,8 +134,9 @@ class _LoginPageState extends State<LoginPage> {
 class AccountPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
 
-  AccountPage(this._fireStore, this._storage);
+  AccountPage(this._fireStore, this._storage, this._speechProvider);
   @override
   State<AccountPage> createState() => new _AccountPageState();
 }
@@ -205,8 +206,8 @@ class _AccountPageState extends State<AccountPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(widget._fireStore, widget._storage)),
+                      builder: (context) => LoginPage(widget._fireStore,
+                          widget._storage, widget._speechProvider)),
                 );
               },
               elevation: 10.0,
@@ -221,8 +222,9 @@ class _AccountPageState extends State<AccountPage> {
 class RegisterPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
 
-  RegisterPage(this._fireStore, this._storage);
+  RegisterPage(this._fireStore, this._storage, this._speechProvider);
 
   @override
   State<RegisterPage> createState() => new _RegisterPageState();
@@ -345,8 +347,8 @@ class _RegisterPageState extends State<RegisterPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(widget._fireStore, widget._storage)));
+                      builder: (context) => LoginPage(widget._fireStore,
+                          widget._storage, widget._speechProvider)));
             },
           )
         ],
@@ -368,15 +370,16 @@ class _RegisterPageState extends State<RegisterPage> {
             .child(profileImgPath)
             .getDownloadURL() ??
         profileImg;
-    context
-        .read<FireAuth>()
-        .register(email: _email, password: _password, displayName: _username, photoURL: pURL);
+    context.read<FireAuth>().register(
+        email: _email,
+        password: _password,
+        displayName: _username,
+        photoURL: pURL);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              //Dashboard()),
-              ProviderDemoApp(widget._fireStore, widget._storage)),
+          builder: (context) => Dashboard(
+              widget._fireStore, widget._storage, widget._speechProvider)),
     );
   }
 }
