@@ -57,7 +57,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 ![](https://i.imgur.com/VZG0f98.png)
 
 
-#### Register
+#### Register/Login
 
 * **Actor**. User.
 * **Description**. The User can register in the app and select prefered language.
@@ -113,7 +113,7 @@ Then I can read what is being said.
 
 **Value:** Must have
 
-**Effort:** *To be filled*
+**Effort:** XL
 
 ---- 
 
@@ -135,7 +135,7 @@ Then I have more options of conferences to attend.
 
 **Value:** Must have
 
-**Effort:** *To be filled*
+**Effort:** M
 
 ---
 
@@ -156,7 +156,7 @@ Then I can read what is being said in my desired language.
 
 **Value:** Must have
 
-**Effort:** *To be filled*
+**Effort:** XL
 
 ---
 
@@ -177,7 +177,7 @@ Then the spectators know which language I am speaking.
 
 **Value:** Must have
 
-**Effort:** *To be filled*
+**Effort:** M
 
 ---
 
@@ -197,8 +197,7 @@ Then I can save my preferences.
 ```
 
 **Value:** Should have
-
-**Effort:** *To be filled*
+**Effort:** M
 
 ---
 
@@ -219,7 +218,7 @@ Then I can join the talks/conferences.
 
 **Value:** Could have
 
-**Effort:** *To be filled*
+**Effort:** S
 
 ---
 
@@ -241,7 +240,7 @@ Then I can join it directly.
 
 **Value:** Should have
 
-**Effort:** *To be filled*
+**Effort:** L
 
 ---
 
@@ -262,7 +261,7 @@ Then I can organize my schedule.
 
 **Value:** Could have
 
-**Effort:** *To be filled*
+**Effort:** M
 
 ---
 
@@ -283,7 +282,7 @@ Then I can share my device with other people.
 
 **Value:** Should have
 
-**Effort:** *To be filled*
+**Effort:** S
 
 ---
 
@@ -304,7 +303,7 @@ Then Spectators can join my session and read the transcript.
 
 **Value:** Should have
 
-**Effort:** *To be filled*
+**Effort:** M
 
 ---
 
@@ -354,10 +353,16 @@ It can be beneficial to present the system both in a horizontal or vertical deco
 * horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
 * vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
 
+![Logical architecture](https://i.imgur.com/GH7Gjdq.png)
+
 ### Physical architecture
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+
+![Physical architecture](https://i.imgur.com/CWGckYj.png)
+
+
 
 ### Prototype
 To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
