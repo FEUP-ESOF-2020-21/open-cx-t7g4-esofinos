@@ -4,8 +4,11 @@ class ProviderDemoApp extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  int _documentIndex;
+  String _conferenceLanguage;
 
-  ProviderDemoApp(this._fireStore, this._storage, this._speechProvider);
+  ProviderDemoApp(this._fireStore, this._storage, this._speechProvider,
+      this._documentIndex, this._conferenceLanguage);
 
   @override
   _ProviderDemoAppState createState() => new _ProviderDemoAppState();
@@ -16,12 +19,11 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
       value: widget._speechProvider,
-      child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBarWidget(
-              widget._fireStore, widget._storage, widget._speechProvider),
-          body: SpeechProviderExampleWidget(widget._fireStore, widget._storage),
-        ),
+      child: Scaffold(
+        appBar: AppBarWidget(
+            widget._fireStore, widget._storage, widget._speechProvider),
+        body: SpeechProviderExampleWidget(widget._fireStore, widget._storage,
+            widget._documentIndex, widget._conferenceLanguage),
       ),
     );
   }
@@ -30,35 +32,27 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
 class SpeechProviderExampleWidget extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
-
-  SpeechProviderExampleWidget(this._fireStore, this._storage);
+  int _documentIndex;
+  String _conferenceLanguage;
+  SpeechProviderExampleWidget(this._fireStore, this._storage,
+      this._documentIndex, this._conferenceLanguage);
 
   @override
   _SpeechProviderExampleWidgetState createState() =>
-      _SpeechProviderExampleWidgetState(this._fireStore, this._storage);
+      _SpeechProviderExampleWidgetState(this._fireStore, this._storage,
+          this._documentIndex, this._conferenceLanguage);
 }
 
 class _SpeechProviderExampleWidgetState
     extends State<SpeechProviderExampleWidget> {
   final FireStore _fireStore;
   final FireStorage _storage;
+  int _documentIndex;
+  String _conferenceLanguage;
+  bool _stopListen = false;
 
-  _SpeechProviderExampleWidgetState(this._fireStore, this._storage);
-
-  String _currentLocaleId = "";
-  void _setCurrentLocale(SpeechToTextProvider speechProvider) {
-    //MUST FIX - LOCALE ID NULL ON LOGOOUT AND LOGIN
-    if (speechProvider.isAvailable && _currentLocaleId.isEmpty) {
-      try {
-        print(speechProvider);
-        if (speechProvider.systemLocale.localeId.isNotEmpty)
-          _currentLocaleId = speechProvider.systemLocale.localeId;
-      } catch (e) {
-        print(e);
-        _currentLocaleId = "en_GB";
-      }
-    }
-  }
+  _SpeechProviderExampleWidgetState(this._fireStore, this._storage,
+      this._documentIndex, this._conferenceLanguage);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +64,7 @@ class _SpeechProviderExampleWidgetState
             'Speech recognition not available, no permission or not available on the device.'),
       );
     }
-    _setCurrentLocale(speechProvider);
+
     return Column(children: [
       _buildControlBar(speechProvider),
       _buildRecognizedWords(speechProvider),
@@ -82,10 +76,7 @@ class _SpeechProviderExampleWidgetState
   Widget _buildControlBar(speechProvider) {
     return Container(
       child: Column(
-        children: <Widget>[
-          _buildButtons(speechProvider),
-          _buildLanguageDropdown(speechProvider)
-        ],
+        children: <Widget>[_buildButtons(speechProvider)],
       ),
     );
   }
@@ -104,35 +95,26 @@ class _SpeechProviderExampleWidgetState
                   !speechProvider.isAvailable || speechProvider.isListening
                       ? Icons.mic
                       : Icons.mic_none),
-              onPressed: () => _listen(
-                  speechProvider, snapshot.data.documents[0].documentID),
+              onPressed: () => {
+                print("Listening to: " +
+                    snapshot.data.documents[this._documentIndex].documentID),
+                _listen(speechProvider,
+                    snapshot.data.documents[this._documentIndex].documentID)
+              },
             );
           },
         ),
-        FloatingActionButton(
-          heroTag: "btn3",
-          child: Text('Stop'),
-          onPressed:
-              speechProvider.isListening ? () => speechProvider.stop() : null,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLanguageDropdown(speechProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        DropdownButton<String>(
-          onChanged: (selectedVal) => _switchLang(selectedVal),
-          value: _currentLocaleId,
-          items: speechProvider.locales
-              .map<DropdownMenuItem<String>>(
-                  (localeName) => DropdownMenuItem<String>(
-                        value: localeName.localeId,
-                        child: Text(localeName.name),
-                      ))
-              .toList(),
+        StreamBuilder(
+          stream:
+              FirebaseFirestore.instance.collection('conferences').snapshots(),
+          builder: (context, snapshot) {
+            return FloatingActionButton(
+              heroTag: "btn3",
+              child: Text('Stop'),
+              onPressed: () => _stop(speechProvider,
+                  snapshot.data.documents[this._documentIndex].documentID),
+            );
+          },
         ),
       ],
     );
@@ -158,13 +140,20 @@ class _SpeechProviderExampleWidgetState
                       .collection('conferences')
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (speechProvider.hasResults)
+                    if (speechProvider.hasResults) {
+                      print("In builder, wrote to: " +
+                          snapshot
+                              .data.documents[this._documentIndex].documentID);
                       _storage.updateConference(
-                          snapshot.data.documents[0].documentID,
-                          {'Text': speechProvider.lastResult.recognizedWords});
+                          snapshot
+                              .data.documents[this._documentIndex].documentID,
+                          {'text': speechProvider.lastResult.recognizedWords});
+                    }
+
                     if (!snapshot.hasData)
                       return Text('Loading data... Please wait...');
-                    return Text(snapshot.data.documents[0]['Text']);
+                    return Text(
+                        snapshot.data.documents[this._documentIndex]['text']);
                   },
                 ),
               ),
@@ -214,27 +203,38 @@ class _SpeechProviderExampleWidgetState
     );
   }
 
-  _switchLang(selectedVal) {
-    setState(() {
-      _currentLocaleId = selectedVal;
-    });
-    print(selectedVal);
-  }
-
   _listen(speechProvider, document) {
-    speechProvider.listen(partialResults: true, localeId: _currentLocaleId);
-    StreamSubscription<SpeechRecognitionEvent> _subscription;
-    _subscription = speechProvider.stream.listen((recognitionEvent) async {
+    _stopListen = false;
+    if (_stopListen) return;
+    print("In listen (start), wrote to: " + document);
+    speechProvider.listen(partialResults: true, localeId: _conferenceLanguage);
+    speechProvider.stream.listen((recognitionEvent) async {
       switch (recognitionEvent.eventType) {
         case SpeechRecognitionEventType.finalRecognitionEvent:
+          print("In listen (pause), wrote to: " + document);
           _storage.updateConference(
-              document, {'Text': speechProvider.lastResult.recognizedWords});
+              document, {'text': speechProvider.lastResult.recognizedWords});
           speechProvider.listen(
-              partialResults: true, localeId: _currentLocaleId);
+              partialResults: true, localeId: _conferenceLanguage);
+          break;
+        case SpeechRecognitionEventType.errorEvent:
+          print("In listen (error), wrote to: " + document);
+          _storage.updateConference(
+              document, {'text': speechProvider.lastResult.recognizedWords});
+          speechProvider.listen(
+              partialResults: true, localeId: _conferenceLanguage);
           break;
         default:
           break;
       }
     });
+  }
+
+  _stop(speechProvider, document) {
+    setState(() {
+      _stopListen = true;
+    });
+
+    speechProvider.stop();
   }
 }

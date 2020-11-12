@@ -37,6 +37,7 @@ class FireStorage {
   }
 
   updateConference(document, newValues) {
+    print("In firebase, wrote to: "+document);
     FirebaseFirestore.instance
         .collection('conferences')
         .doc(document)
@@ -44,6 +45,7 @@ class FireStorage {
         .catchError((error) {
       print(error);
     });
+  }
 
   addConference(conferenceName, language) {
     FirebaseFirestore.instance

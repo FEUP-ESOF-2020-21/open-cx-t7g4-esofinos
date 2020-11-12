@@ -11,6 +11,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text('InstantWords'),
+      leading: new IconButton(
+        icon: new Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context,true);
+        },
+      ),
       actions: <Widget>[
         InkWell(
           onTap: () {

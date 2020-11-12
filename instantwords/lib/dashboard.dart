@@ -12,6 +12,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int conferences_Size;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -51,11 +52,13 @@ class _DashboardState extends State<Dashboard> {
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
+          conferences_Size = content.length;
           return new ListView.builder(
-            itemCount: content.length,
+            itemCount: conferences_Size,
             itemBuilder: (BuildContext context, int index) {
               return new RaisedButton(
-                onPressed: _conferencePressed,
+                onPressed: () =>
+                    _conferencePressed(index, content[index]['language']),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -98,12 +101,12 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _conferencePressed() {
-    Navigator.pushReplacement(
+  void _conferencePressed(int index, String language) {
+    Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProviderDemoApp(
-              widget._fireStore, widget._storage, widget._speechProvider),
+          builder: (context) => ProviderDemoApp(widget._fireStore,
+              widget._storage, widget._speechProvider, index, language),
         ));
   }
 
@@ -112,7 +115,10 @@ class _DashboardState extends State<Dashboard> {
         context,
         MaterialPageRoute(
             builder: (context) => CreateConferencePage(
-                widget._fireStore, widget._storage, widget._speechProvider)));
+                widget._fireStore,
+                widget._storage,
+                widget._speechProvider,
+                this.conferences_Size)));
   }
 }
 
@@ -120,8 +126,10 @@ class CreateConferencePage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  int conference_Size;
 
-  CreateConferencePage(this._fireStore, this._storage, this._speechProvider);
+  CreateConferencePage(this._fireStore, this._storage, this._speechProvider,
+      this.conference_Size);
 
   @override
   State<CreateConferencePage> createState() => new _CreateConferencePageState();
@@ -229,9 +237,8 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ProviderDemoApp(
-              widget._fireStore, widget._storage, widget._speechProvider),
-        ));
+            builder: (context) => Dashboard(
+                widget._fireStore, widget._storage, widget._speechProvider)));
   }
 }
 
