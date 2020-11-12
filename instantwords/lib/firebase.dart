@@ -36,6 +36,15 @@ class FireStorage {
     }
   }
 
+  updateConference(document, newValues) {
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(document)
+        .update(newValues)
+        .catchError((error) {
+      print(error);
+    });
+
   addConference(conferenceName, language) {
     FirebaseFirestore.instance
         .collection('conferences')

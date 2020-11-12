@@ -20,7 +20,7 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
         home: Scaffold(
           appBar: AppBarWidget(
               widget._fireStore, widget._storage, widget._speechProvider),
-          body: SpeechProviderExampleWidget(),
+          body: SpeechProviderExampleWidget(widget._fireStore, widget._storage),
         ),
       ),
     );
@@ -28,13 +28,23 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
 }
 
 class SpeechProviderExampleWidget extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  SpeechProviderExampleWidget(this._fireStore, this._storage);
+
   @override
   _SpeechProviderExampleWidgetState createState() =>
-      _SpeechProviderExampleWidgetState();
+      _SpeechProviderExampleWidgetState(this._fireStore, this._storage);
 }
 
 class _SpeechProviderExampleWidgetState
     extends State<SpeechProviderExampleWidget> {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+
+  _SpeechProviderExampleWidgetState(this._fireStore, this._storage);
+
   String _currentLocaleId = "";
   void _setCurrentLocale(SpeechToTextProvider speechProvider) {
     //MUST FIX - LOCALE ID NULL ON LOGOOUT AND LOGIN
@@ -62,109 +72,146 @@ class _SpeechProviderExampleWidgetState
     }
     _setCurrentLocale(speechProvider);
     return Column(children: [
-      Container(
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                FloatingActionButton(
-                  heroTag: "btn2",
-                  child: Icon(
-                      !speechProvider.isAvailable || speechProvider.isListening
-                          ? Icons.mic
-                          : Icons.mic_none),
-                  onPressed: () => _listen(speechProvider),
-                ),
-                FloatingActionButton(
-                  heroTag: "btn3",
-                  child: Text('Stop'),
-                  onPressed: speechProvider.isListening
-                      ? () => speechProvider.stop()
-                      : null,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                DropdownButton(
-                  onChanged: (selectedVal) => _switchLang(selectedVal),
-                  value: _currentLocaleId,
-                  items: speechProvider.locales
-                      .map(
-                        (localeName) => DropdownMenuItem(
-                          value: localeName.localeId,
-                          child: Text(localeName.name),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 4,
-        child: Column(
-          children: <Widget>[
-            Center(
-              child: Text(
-                'Recognized Words',
-                style: TextStyle(fontSize: 22.0),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).selectedRowColor,
-                child: Center(
-                  child: speechProvider.hasResults
-                      ? Text(
-                          speechProvider.lastResult.recognizedWords,
-                          textAlign: TextAlign.center,
-                        )
-                      : Container(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 1,
-        child: Column(
-          children: <Widget>[
-            Center(
-              child: Text(
-                'Error Status',
-                style: TextStyle(fontSize: 22.0),
-              ),
-            ),
-            Center(
-              child: speechProvider.hasError
-                  ? Text(speechProvider.lastError.errorMsg)
-                  : Container(),
-            ),
-          ],
-        ),
-      ),
-      Container(
-        padding: EdgeInsets.symmetric(vertical: 20),
-        color: Theme.of(context).backgroundColor,
-        child: Center(
-          child: speechProvider.isListening
-              ? Text(
-                  "I'm listening...",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              : Text(
-                  'Not listening',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-        ),
-      ),
+      _buildControlBar(speechProvider),
+      _buildRecognizedWords(speechProvider),
+      _buildErrorStatus(speechProvider),
+      _buildListeningStatus(speechProvider)
     ]);
+  }
+
+  Widget _buildControlBar(speechProvider) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _buildButtons(speechProvider),
+          _buildLanguageDropdown(speechProvider)
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtons(speechProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        StreamBuilder(
+          stream:
+              FirebaseFirestore.instance.collection('conferences').snapshots(),
+          builder: (context, snapshot) {
+            return FloatingActionButton(
+              heroTag: "btn2",
+              child: Icon(
+                  !speechProvider.isAvailable || speechProvider.isListening
+                      ? Icons.mic
+                      : Icons.mic_none),
+              onPressed: () => _listen(
+                  speechProvider, snapshot.data.documents[0].documentID),
+            );
+          },
+        ),
+        FloatingActionButton(
+          heroTag: "btn3",
+          child: Text('Stop'),
+          onPressed:
+              speechProvider.isListening ? () => speechProvider.stop() : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageDropdown(speechProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        DropdownButton<String>(
+          onChanged: (selectedVal) => _switchLang(selectedVal),
+          value: _currentLocaleId,
+          items: speechProvider.locales
+              .map<DropdownMenuItem<String>>(
+                  (localeName) => DropdownMenuItem<String>(
+                        value: localeName.localeId,
+                        child: Text(localeName.name),
+                      ))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecognizedWords(speechProvider) {
+    return Expanded(
+      flex: 4,
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: Text(
+              'Recognized Words',
+              style: TextStyle(fontSize: 22.0),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('conferences')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (speechProvider.hasResults)
+                      _storage.updateConference(
+                          snapshot.data.documents[0].documentID,
+                          {'Text': speechProvider.lastResult.recognizedWords});
+                    if (!snapshot.hasData)
+                      return Text('Loading data... Please wait...');
+                    return Text(snapshot.data.documents[0]['Text']);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorStatus(speechProvider) {
+    return Expanded(
+      flex: 1,
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: Text(
+              'Error Status',
+              style: TextStyle(fontSize: 22.0),
+            ),
+          ),
+          Center(
+            child: speechProvider.hasError
+                ? Text(speechProvider.lastError.errorMsg)
+                : Container(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListeningStatus(speechProvider) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      color: Theme.of(context).backgroundColor,
+      child: Center(
+        child: speechProvider.isListening
+            ? Text(
+                "I'm listening...",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            : Text(
+                'Not listening',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+      ),
+    );
   }
 
   _switchLang(selectedVal) {
@@ -174,12 +221,14 @@ class _SpeechProviderExampleWidgetState
     print(selectedVal);
   }
 
-  _listen(speechProvider) {
+  _listen(speechProvider, document) {
     speechProvider.listen(partialResults: true, localeId: _currentLocaleId);
     StreamSubscription<SpeechRecognitionEvent> _subscription;
     _subscription = speechProvider.stream.listen((recognitionEvent) async {
       switch (recognitionEvent.eventType) {
         case SpeechRecognitionEventType.finalRecognitionEvent:
+          _storage.updateConference(
+              document, {'Text': speechProvider.lastResult.recognizedWords});
           speechProvider.listen(
               partialResults: true, localeId: _currentLocaleId);
           break;
