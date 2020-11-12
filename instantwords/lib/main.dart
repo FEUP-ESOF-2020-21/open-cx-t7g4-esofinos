@@ -17,6 +17,7 @@ part 'firebase.dart';
 part 'widgets.dart';
 part 'speechtotext.dart';
 part 'login.dart';
+part 'dashboard.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();

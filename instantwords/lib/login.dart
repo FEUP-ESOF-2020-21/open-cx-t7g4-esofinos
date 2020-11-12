@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => ProviderDemoApp(
+          builder: (context) => Dashboard(
               widget._fireStore, widget._storage, widget._speechProvider)),
     );
   }
@@ -376,10 +376,10 @@ class _RegisterPageState extends State<RegisterPage> {
         displayName: _username,
         photoURL: pURL);
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProviderDemoApp(
-              widget._fireStore, widget._storage, widget._speechProvider),
-        ));
+      context,
+      MaterialPageRoute(
+          builder: (context) => Dashboard(
+              widget._fireStore, widget._storage, widget._speechProvider)),
+    );
   }
 }
