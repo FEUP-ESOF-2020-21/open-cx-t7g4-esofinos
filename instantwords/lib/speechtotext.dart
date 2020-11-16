@@ -322,7 +322,9 @@ class _SpectatorScreenState
                 _conferenceLanguage = selectedVal;
               }),
               value: _conferenceLanguage,
-              items: widget._speechProvider.locales
+              items: widget._speechProvider.locales 
+              //Change here to widget.translator.languagelist
+              //And find way to get list of languages
                   .map<DropdownMenuItem<String>>(
                       (localeName) => DropdownMenuItem<String>(
                             value: localeName.localeId,
@@ -371,7 +373,7 @@ class _SpectatorScreenState
     print(_conferenceLanguage.split("_")[0]);
       _translation = await translator.translate(
                           text,
-                          to: _conferenceLanguage.split("_")[0]);
+                          to: _conferenceLanguage);
   }
 
 }
