@@ -13,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:translator/translator.dart';
 
 part 'firebase.dart';
 part 'widgets.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
 class InstantWordsApp extends StatelessWidget {
   final FireStore firestore = FireStore();
   final FireStorage storage = FireStorage();
-
+  final translator = GoogleTranslator();
   final SpeechToTextProvider speechProvider =
       SpeechToTextProvider(SpeechToText());
 
@@ -84,7 +85,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore, storage, speechProvider),
+        home: LoginPage(firestore, storage, speechProvider,translator),
       ),
     );
   }

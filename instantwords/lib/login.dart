@@ -4,8 +4,9 @@ class LoginPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  final translator;
 
-  LoginPage(this._fireStore, this._storage, this._speechProvider);
+  LoginPage(this._fireStore, this._storage, this._speechProvider, this.translator);
 
   @override
   State<LoginPage> createState() => new _LoginPageState();
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => RegisterPage(widget._fireStore,
-                          widget._storage, widget._speechProvider)));
+                          widget._storage, widget._speechProvider,widget.translator)));
             },
           ),
           new FlatButton(
@@ -122,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
           builder: (context) => Dashboard(
-              widget._fireStore, widget._storage, widget._speechProvider)),
+              widget._fireStore, widget._storage, widget._speechProvider, widget.translator)),
     );
   }
 
@@ -135,8 +136,9 @@ class AccountPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  final translator;
 
-  AccountPage(this._fireStore, this._storage, this._speechProvider);
+  AccountPage(this._fireStore, this._storage, this._speechProvider,this.translator);
   @override
   State<AccountPage> createState() => new _AccountPageState();
 }
@@ -207,7 +209,7 @@ class _AccountPageState extends State<AccountPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => LoginPage(widget._fireStore,
-                          widget._storage, widget._speechProvider)),
+                          widget._storage, widget._speechProvider, widget.translator)),
                 );
               },
               elevation: 10.0,
@@ -223,8 +225,9 @@ class RegisterPage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  final translator;
 
-  RegisterPage(this._fireStore, this._storage, this._speechProvider);
+  RegisterPage(this._fireStore, this._storage, this._speechProvider,this.translator);
 
   @override
   State<RegisterPage> createState() => new _RegisterPageState();
@@ -348,7 +351,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => LoginPage(widget._fireStore,
-                          widget._storage, widget._speechProvider)));
+                          widget._storage, widget._speechProvider,widget.translator)));
             },
           )
         ],
@@ -379,7 +382,7 @@ class _RegisterPageState extends State<RegisterPage> {
       context,
       MaterialPageRoute(
           builder: (context) => Dashboard(
-              widget._fireStore, widget._storage, widget._speechProvider)),
+              widget._fireStore, widget._storage, widget._speechProvider,widget.translator)),
     );
   }
 }

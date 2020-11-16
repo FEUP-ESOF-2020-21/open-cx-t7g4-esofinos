@@ -4,8 +4,9 @@ class Dashboard extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  final translator;
 
-  Dashboard(this._fireStore, this._storage, this._speechProvider);
+  Dashboard(this._fireStore, this._storage, this._speechProvider,this.translator);
 
   @override
   State<Dashboard> createState() => new _DashboardState();
@@ -102,12 +103,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _conferencePressed(int index, String language) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProviderDemoApp(widget._fireStore,
-              widget._storage, widget._speechProvider, index, language),
-        ));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SpectatorWidget(widget._fireStore,
+                widget._storage, widget._speechProvider,index, language,widget.translator),
+          ));
   }
 
   void _createConferencePressed() {
@@ -118,7 +119,8 @@ class _DashboardState extends State<Dashboard> {
                 widget._fireStore,
                 widget._storage,
                 widget._speechProvider,
-                this.conferences_Size)));
+                this.conferences_Size,
+                widget.translator)));
   }
 }
 
@@ -127,9 +129,10 @@ class CreateConferencePage extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   int conference_Size;
+  final translator;
 
   CreateConferencePage(this._fireStore, this._storage, this._speechProvider,
-      this.conference_Size);
+      this.conference_Size,this.translator);
 
   @override
   State<CreateConferencePage> createState() => new _CreateConferencePageState();
@@ -233,12 +236,13 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
   }
 
   void _createConferencePressed() {
-    widget._storage.addConference(_name, _language);
+    widget._storage.addConference(_name, _language,context.read<FireAuth>().currentUser.uid);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => Dashboard(
-                widget._fireStore, widget._storage, widget._speechProvider)));
+            builder: (context) => ProviderDemoApp(widget._fireStore,
+                widget._storage, widget._speechProvider, widget.conference_Size, _language,widget.translator)
+    ));
   }
 }
 

@@ -4,11 +4,12 @@ class ProviderDemoApp extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
+  final translator;
   int _documentIndex;
   String _conferenceLanguage;
 
   ProviderDemoApp(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage);
+      this._documentIndex, this._conferenceLanguage,this.translator);
 
   @override
   _ProviderDemoAppState createState() => new _ProviderDemoAppState();
@@ -21,7 +22,7 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
       value: widget._speechProvider,
       child: Scaffold(
         appBar: AppBarWidget(
-            widget._fireStore, widget._storage, widget._speechProvider),
+            widget._fireStore, widget._storage, widget._speechProvider,widget.translator),
         body: SpeechProviderExampleWidget(widget._fireStore, widget._storage,
             widget._documentIndex, widget._conferenceLanguage),
       ),
@@ -237,4 +238,140 @@ class _SpeechProviderExampleWidgetState
 
     speechProvider.stop();
   }
+}
+
+class SpectatorWidget extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
+  final translator;
+  int _documentIndex;
+  String _conferenceLanguage;
+
+  SpectatorWidget(this._fireStore, this._storage, this._speechProvider,
+      this._documentIndex, this._conferenceLanguage,this.translator);
+
+  @override
+  _SpectatorWidgetState createState() => new _SpectatorWidgetState();
+}
+
+class _SpectatorWidgetState extends State<SpectatorWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<SpeechToTextProvider>.value(
+      value: widget._speechProvider,
+      child: Scaffold(
+        appBar: AppBarWidget(
+            widget._fireStore, widget._storage, widget._speechProvider,widget.translator),
+        body: SpectatorScreen(widget._fireStore, widget._storage, widget._speechProvider,
+            widget._documentIndex, widget._conferenceLanguage,widget.translator),
+      ),
+    );
+  }
+}
+
+class SpectatorScreen extends StatefulWidget {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
+  int _documentIndex;
+  String _conferenceLanguage;
+  final translator;
+  SpectatorScreen(this._fireStore, this._storage, this._speechProvider,
+      this._documentIndex, this._conferenceLanguage,this.translator);
+
+  @override
+  _SpectatorScreenState createState() =>
+      _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
+          this._documentIndex, this._conferenceLanguage,this.translator);
+}
+
+class _SpectatorScreenState
+    extends State<SpectatorScreen> {
+  final FireStore _fireStore;
+  final FireStorage _storage;
+  final SpeechToTextProvider _speechProvider;
+  int _documentIndex;
+  String _conferenceLanguage;
+  final translator;
+  var _translation;
+
+  _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
+      this._documentIndex, this._conferenceLanguage,this.translator);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+       _buildLanguageDropdown(),
+      _buildRecognizedWords()
+    ]);
+  }
+   Widget _buildLanguageDropdown() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 25),
+          child: Text('Language', textScaleFactor: 1.5),
+        ),
+        Padding(
+            padding: EdgeInsets.only(bottom: 25),
+            child: DropdownButton<String>(
+              onChanged: (selectedVal) => setState(() {
+                _conferenceLanguage = selectedVal;
+              }),
+              value: _conferenceLanguage,
+              items: widget._speechProvider.locales
+                  .map<DropdownMenuItem<String>>(
+                      (localeName) => DropdownMenuItem<String>(
+                            value: localeName.localeId,
+                            child: Text(localeName.name),
+                          ))
+                  .toList(),
+            ))
+      ],
+    );
+  }
+  Widget _buildRecognizedWords(){
+    return Expanded(
+      flex: 4,
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: Text(
+              'Recognized Words',
+              style: TextStyle(fontSize: 22.0),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('conferences')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Text('Loading data... Please wait...');
+                    //getTranslation(snapshot.data.documents[this._documentIndex]['text']);
+                    return Text(snapshot.data.documents[this._documentIndex]['text']);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Text> getTranslation(String text) async {
+    print(_conferenceLanguage.split("_")[0]);
+      _translation = await translator.translate(
+                          text,
+                          to: _conferenceLanguage.split("_")[0]);
+  }
+
 }
