@@ -96,6 +96,10 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 ### User stories
 
+#### User Story Map
+
+![User Story Map](https://imgur.com/jFVvTgA)
+
 #### Story #1 **EPIC**
 
 As a spectator, I want a transcript, so that I can read what is being said in the conference.
@@ -353,12 +357,16 @@ It can be beneficial to present the system both in a horizontal or vertical deco
 * horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
 * vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
 
+**Text to be added**
+
 ![Logical architecture](https://i.imgur.com/GH7Gjdq.png)
 
 ### Physical architecture
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+
+For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text) and [Translation](https://pub.dev/packages/translator) functionalities.
 
 ![Physical architecture](https://i.imgur.com/CWGckYj.png)
 
