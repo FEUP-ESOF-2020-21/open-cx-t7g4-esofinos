@@ -40,7 +40,7 @@ José Silva *up201705591@fe.up.pt*
 
 ## Product Vision
 
-Enabling everyone to experience conferences to the fullest by using speech-to-text to create real time subtitles during talks!
+Enabling everyone, specially people with hearing disabilities, to experience conferences to the fullest by using speech-to-text to create real time subtitles during talks!
 
 ---
 ## Elevator Pitch
@@ -54,7 +54,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 ### Use case diagram 
 
-![](https://i.imgur.com/VZG0f98.png)
+![Use Case Diagram](https://imgur.com/DLCiJpW)
 
 
 #### Register/Login
