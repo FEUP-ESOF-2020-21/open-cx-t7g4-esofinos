@@ -7,6 +7,8 @@ class ProviderDemoApp extends StatefulWidget {
   final translator;
   int _documentIndex;
   String _conferenceLanguage;
+  String _toBeTranslated;
+
 
   ProviderDemoApp(this._fireStore, this._storage, this._speechProvider,
       this._documentIndex, this._conferenceLanguage,this.translator);
@@ -35,6 +37,7 @@ class SpeechProviderExampleWidget extends StatefulWidget {
   final FireStorage _storage;
   int _documentIndex;
   String _conferenceLanguage;
+  String _toBeTranslated;
   SpeechProviderExampleWidget(this._fireStore, this._storage,
       this._documentIndex, this._conferenceLanguage);
 
@@ -50,6 +53,7 @@ class _SpeechProviderExampleWidgetState
   final FireStorage _storage;
   int _documentIndex;
   String _conferenceLanguage;
+  String _toBeTranslated;
   bool _stopListen = false;
 
   _SpeechProviderExampleWidgetState(this._fireStore, this._storage,
@@ -292,13 +296,14 @@ class _SpectatorScreenState
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   int _documentIndex;
-  String _conferenceLanguage;
+  String _conferenceLanguage = "en_US";
+  String _translationLanguage = "en_US";
+  String _toBeTranslated = "";
   final translator;
-  var _translation;
+  String _translation = "";
 
   _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
       this._documentIndex, this._conferenceLanguage,this.translator);
-
 
   @override
   Widget build(BuildContext context) {
@@ -319,9 +324,12 @@ class _SpectatorScreenState
             padding: EdgeInsets.only(bottom: 25),
             child: DropdownButton<String>(
               onChanged: (selectedVal) => setState(() {
-                _conferenceLanguage = selectedVal;
+                _translationLanguage = selectedVal;
+                setState(() {
+                  getTranslation(_toBeTranslated);
+                });
               }),
-              value: _conferenceLanguage,
+              value: _translationLanguage,
               items: widget._speechProvider.locales 
               //Change here to widget.translator.languagelist
               //And find way to get list of languages
@@ -355,10 +363,22 @@ class _SpectatorScreenState
                       .collection('conferences')
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData)
+                    if (!snapshot.hasData) {
                       return Text('Loading data... Please wait...');
-                    //getTranslation(snapshot.data.documents[this._documentIndex]['text']);
-                    return Text(snapshot.data.documents[this._documentIndex]['text']);
+                    }
+                    _toBeTranslated = snapshot.data.documents[this
+                        ._documentIndex]['text'];
+                    _conferenceLanguage = snapshot.data.documents[this
+                        ._documentIndex]['language'];
+                    return FutureBuilder(
+                      future: getTranslation(_toBeTranslated),
+                      builder: (BuildContext context, AsyncSnapshot<String> asyncSnapshot) {
+                        if (!asyncSnapshot.hasData) {
+                          return Text("Loading...");
+                        }
+                        return Text(_translation);
+                      }
+                    );
                   },
                 ),
               ),
@@ -369,11 +389,17 @@ class _SpectatorScreenState
     );
   }
 
-  Future<Text> getTranslation(String text) async {
-    print(_conferenceLanguage.split("_")[0]);
-      _translation = await translator.translate(
-                          text,
-                          to: _conferenceLanguage);
+  Future<String> getTranslation(String text) async {
+    String conLan = _conferenceLanguage.split('_')[0];
+    String traLan = _translationLanguage.split('_')[0];
+    _translation = (await translator.translate(
+                        text,
+                        from: conLan,
+                        to: traLan)).text;
+    if (_translation == null) {
+      _translation = "Could not translate!";
+    }
+    return _translation;
   }
 
 }

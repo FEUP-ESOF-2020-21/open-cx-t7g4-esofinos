@@ -17,7 +17,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: _buildBar(context),
+      appBar: AppBarWidget(
+          widget._fireStore, widget._storage, widget._speechProvider,widget.translator),
       body: new Container(
         padding: EdgeInsets.all(16.0),
         child: new Column(
