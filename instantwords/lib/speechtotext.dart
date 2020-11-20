@@ -9,9 +9,8 @@ class ProviderDemoApp extends StatefulWidget {
   String _conferenceLanguage;
   String _toBeTranslated;
 
-
   ProviderDemoApp(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage,this.translator);
+      this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
   _ProviderDemoAppState createState() => new _ProviderDemoAppState();
@@ -23,8 +22,8 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
       value: widget._speechProvider,
       child: Scaffold(
-        appBar: AppBarWidget(
-            widget._fireStore, widget._storage, widget._speechProvider,widget.translator),
+        appBar: AppBarWidget(widget._fireStore, widget._storage,
+            widget._speechProvider, widget.translator),
         body: SpeechProviderExampleWidget(widget._fireStore, widget._storage,
             widget._documentIndex, widget._conferenceLanguage),
       ),
@@ -101,6 +100,7 @@ class _SpeechProviderExampleWidgetState
                       ? Icons.mic
                       : Icons.mic_none),
               onPressed: () => {
+                _startListen(),
                 print("Listening to: " +
                     snapshot.data.documents[this._documentIndex].documentID),
                 _listen(speechProvider,
@@ -116,8 +116,9 @@ class _SpeechProviderExampleWidgetState
             return FloatingActionButton(
               heroTag: "btn3",
               child: Text('Stop'),
-              onPressed: () => _stop(speechProvider,
-                  snapshot.data.documents[this._documentIndex].documentID),
+              onPressed: () => _stop(
+                speechProvider,
+              ),
             );
           },
         ),
@@ -209,8 +210,8 @@ class _SpeechProviderExampleWidgetState
   }
 
   _listen(speechProvider, document) {
-    _stopListen = false;
     if (_stopListen) return;
+    _stopListen = false;
     print("In listen (start), wrote to: " + document);
     speechProvider.listen(partialResults: true, localeId: _conferenceLanguage);
     speechProvider.stream.listen((recognitionEvent) async {
@@ -235,12 +236,17 @@ class _SpeechProviderExampleWidgetState
     });
   }
 
-  _stop(speechProvider, document) {
+  _startListen() {
+    setState(() {
+      _stopListen = false;
+    });
+  }
+
+  _stop(speechProvider) {
     setState(() {
       _stopListen = true;
+      speechProvider.stop();
     });
-
-    speechProvider.stop();
   }
 }
 
@@ -253,7 +259,7 @@ class SpectatorWidget extends StatefulWidget {
   String _conferenceLanguage;
 
   SpectatorWidget(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage,this.translator);
+      this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
   _SpectatorWidgetState createState() => new _SpectatorWidgetState();
@@ -265,10 +271,15 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
       value: widget._speechProvider,
       child: Scaffold(
-        appBar: AppBarWidget(
-            widget._fireStore, widget._storage, widget._speechProvider,widget.translator),
-        body: SpectatorScreen(widget._fireStore, widget._storage, widget._speechProvider,
-            widget._documentIndex, widget._conferenceLanguage,widget.translator),
+        appBar: AppBarWidget(widget._fireStore, widget._storage,
+            widget._speechProvider, widget.translator),
+        body: SpectatorScreen(
+            widget._fireStore,
+            widget._storage,
+            widget._speechProvider,
+            widget._documentIndex,
+            widget._conferenceLanguage,
+            widget.translator),
       ),
     );
   }
@@ -282,16 +293,19 @@ class SpectatorScreen extends StatefulWidget {
   String _conferenceLanguage;
   final translator;
   SpectatorScreen(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage,this.translator);
+      this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
-  _SpectatorScreenState createState() =>
-      _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
-          this._documentIndex, this._conferenceLanguage,this.translator);
+  _SpectatorScreenState createState() => _SpectatorScreenState(
+      this._fireStore,
+      this._storage,
+      this._speechProvider,
+      this._documentIndex,
+      this._conferenceLanguage,
+      this.translator);
 }
 
-class _SpectatorScreenState
-    extends State<SpectatorScreen> {
+class _SpectatorScreenState extends State<SpectatorScreen> {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
@@ -303,16 +317,15 @@ class _SpectatorScreenState
   String _translation = "";
 
   _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage,this.translator);
+      this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-       _buildLanguageDropdown(),
-      _buildRecognizedWords()
-    ]);
+    return Column(
+        children: [_buildLanguageDropdown(), _buildRecognizedWords()]);
   }
-   Widget _buildLanguageDropdown() {
+
+  Widget _buildLanguageDropdown() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -330,9 +343,9 @@ class _SpectatorScreenState
                 });
               }),
               value: _translationLanguage,
-              items: widget._speechProvider.locales 
-              //Change here to widget.translator.languagelist
-              //And find way to get list of languages
+              items: widget._speechProvider.locales
+                  //Change here to widget.translator.languagelist
+                  //And find way to get list of languages
                   .map<DropdownMenuItem<String>>(
                       (localeName) => DropdownMenuItem<String>(
                             value: localeName.localeId,
@@ -343,7 +356,8 @@ class _SpectatorScreenState
       ],
     );
   }
-  Widget _buildRecognizedWords(){
+
+  Widget _buildRecognizedWords() {
     return Expanded(
       flex: 4,
       child: Column(
@@ -366,19 +380,19 @@ class _SpectatorScreenState
                     if (!snapshot.hasData) {
                       return Text('Loading data... Please wait...');
                     }
-                    _toBeTranslated = snapshot.data.documents[this
-                        ._documentIndex]['text'];
-                    _conferenceLanguage = snapshot.data.documents[this
-                        ._documentIndex]['language'];
+                    _toBeTranslated =
+                        snapshot.data.documents[this._documentIndex]['text'];
+                    _conferenceLanguage = snapshot
+                        .data.documents[this._documentIndex]['language'];
                     return FutureBuilder(
-                      future: getTranslation(_toBeTranslated),
-                      builder: (BuildContext context, AsyncSnapshot<String> asyncSnapshot) {
-                        if (!asyncSnapshot.hasData) {
-                          return Text("Loading...");
-                        }
-                        return Text(_translation);
-                      }
-                    );
+                        future: getTranslation(_toBeTranslated),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> asyncSnapshot) {
+                          if (!asyncSnapshot.hasData) {
+                            return Text("Loading...");
+                          }
+                          return Text(_translation);
+                        });
                   },
                 ),
               ),
@@ -392,14 +406,11 @@ class _SpectatorScreenState
   Future<String> getTranslation(String text) async {
     String conLan = _conferenceLanguage.split('_')[0];
     String traLan = _translationLanguage.split('_')[0];
-    _translation = (await translator.translate(
-                        text,
-                        from: conLan,
-                        to: traLan)).text;
+    _translation =
+        (await translator.translate(text, from: conLan, to: traLan)).text;
     if (_translation == null) {
       _translation = "Could not translate!";
     }
     return _translation;
   }
-
 }
