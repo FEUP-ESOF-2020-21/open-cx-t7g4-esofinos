@@ -30,11 +30,36 @@ class FireStorage {
         print(downloadURL);
       } else {
         print('No path Received');
-        
       }
     } else {
       print('Grant permission and try again!');
     }
+  }
+
+  updateConference(document, newValues) {
+    print("In firebase, wrote to: "+document);
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(document)
+        .update(newValues)
+        .catchError((error) {
+      print(error);
+    });
+  }
+
+  addConference(conferenceName, language, uid) {
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(conferenceName)
+        .set({'language': language, 'text': "", 'owner': uid})
+        .then((value) => print("Conferemce Added"))
+        .catchError((error) => print("Failed to add conference: $error"));
+  }
+
+  Future<List<QueryDocumentSnapshot>> getConferences() async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection("conferences").get();
+    return snapshot.docs;
   }
 }
 

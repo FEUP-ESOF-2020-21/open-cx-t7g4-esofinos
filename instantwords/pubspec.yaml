@@ -31,6 +31,8 @@ dependencies:
 
   #Speech to Text
   speech_to_text: ^2.7.0
+  #Translator
+  translator: ^0.1.5
   #Firebase Auth
   firebase_auth: "^0.18.1"
   #Firebase Storage
