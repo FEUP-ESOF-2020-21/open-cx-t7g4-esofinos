@@ -359,7 +359,7 @@ It can be beneficial to present the system both in a horizontal or vertical deco
 
 **Text to be added**
 
-![Logical Architecture](https://imgur.com/JtcFxJU)
+![Logical Architecture](https://i.imgur.com/JtcFxJU.png)
 
 ### Physical architecture
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
