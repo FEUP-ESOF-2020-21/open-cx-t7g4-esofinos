@@ -74,6 +74,23 @@ class FireStorage {
         await FirebaseFirestore.instance.collection("conferences").get();
     return snapshot.docs;
   }
+
+  Future<int> getConferenceByID(String id) async {
+    List<QueryDocumentSnapshot> conferences = await getConferences();
+
+    for (int i = 0; i < conferences.length; i++) {
+      if (conferences[i].id.toString() == id) return i;
+    }
+    return -1;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getOwnerConferences(String owner) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("conferences")
+        .where('owner', isEqualTo: owner)
+        .get();
+    return snapshot.docs;
+  }
 }
 
 class FireAuth {
@@ -189,8 +206,7 @@ class AuthExceptionHandler {
             "The email has already been registered. Please login or reset your password.";
         break;
       case AuthResultStatus.weakPassword:
-        errorMessage =
-            "Password should be at least 6 characters.";
+        errorMessage = "Password should be at least 6 characters.";
         break;
       default:
         errorMessage = "An undefined Error happened.";

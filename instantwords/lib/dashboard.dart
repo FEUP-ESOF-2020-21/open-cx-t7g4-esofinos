@@ -121,7 +121,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _createConferencePressed() {
-    Navigator.pushReplacement(
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => CreateConferencePage(
@@ -247,7 +247,7 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
   void _createConferencePressed() {
     widget._storage.addConference(
         _name, _language, context.read<FireAuth>().currentUser.uid);
-    Navigator.pushReplacement(
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => ProviderDemoApp(

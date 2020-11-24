@@ -174,6 +174,7 @@ class AccountPage extends StatefulWidget {
   final SpeechToTextProvider _speechProvider;
   final translator;
   final bool needPop = false;
+  int conferences_Size;
 
   AccountPage(
       this._fireStore, this._storage, this._speechProvider, this.translator);
@@ -188,11 +189,14 @@ class _AccountPageState extends State<AccountPage> {
       appBar: _buildBar(context),
       body: new Container(
         padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildUserFields(),
-            _buildButton(),
-          ],
+        child: new Center(
+          child: new Column(
+            children: <Widget>[
+              _buildUserFields(),
+              _buildConferenceBlocks(),
+              _buildButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -215,12 +219,13 @@ class _AccountPageState extends State<AccountPage> {
                     .currentUser
                     .photoURL ??
                 "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
-            radius: 200,
+            radius: 150,
           ),
-          Text(context.watch<FireAuth>().currentUser.email,
+          Text("E-mail: " + context.watch<FireAuth>().currentUser.email,
               textScaleFactor: 1.5),
-          Text(context.watch<FireAuth>().currentUser.displayName,
+          Text("Username: " + context.watch<FireAuth>().currentUser.displayName,
               textScaleFactor: 1.5),
+          Text("Conferences:",textScaleFactor: 2),
         ],
       ),
     );
@@ -259,6 +264,66 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildConferenceBlocks() {
+    return Expanded(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: _getConferences(),
+        ),
+      ),
+    );
+  }
+
+  Widget _getConferences() {
+    return FutureBuilder(
+        future: widget._storage.getOwnerConferences(context.watch<FireAuth>().currentUser.uid),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (!snapshot.hasData) return new Container();
+          List<QueryDocumentSnapshot> content = snapshot.data;
+          widget.conferences_Size = content.length;
+          return new ListView.builder(
+            itemCount: widget.conferences_Size,
+            itemBuilder: (BuildContext context, int index) {
+              return new RaisedButton(
+                onPressed: () => _goToConferencePressed(
+                    content[index].id.toString(), content[index]['language']),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: new ListTile(
+                        leading: Icon(Icons.analytics, size: 50),
+                        title: Text(content[index].id.toString(),
+                            textScaleFactor: 2),
+                        subtitle: Text(content[index]['language'],
+                            textScaleFactor: 1.2),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  void _goToConferencePressed(String id, String language) async {
+    int confIndex = await widget._storage.getConferenceByID(id);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProviderDemoApp(
+                widget._fireStore,
+                widget._storage,
+                widget._speechProvider,
+                confIndex,
+                language,
+                widget.translator)));
   }
 }
 
@@ -422,14 +487,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _createAccountPressed() async {
     print('The user wants to create an accoutn with $_email and $_password');
-    if (!uploadedPicture) _showAlertDialog("No Profile Picture!");
-
-    else{
+    if (!uploadedPicture)
+      _showAlertDialog("No Profile Picture!");
+    else {
       String pURL = await widget._storage.storage
-            .ref()
-            .child(profileImgPath)
-            .getDownloadURL() ??
-        profileImg;
+              .ref()
+              .child(profileImgPath)
+              .getDownloadURL() ??
+          profileImg;
       final status = await FireAuth().register(
           email: _email,
           password: _password,
@@ -439,15 +504,14 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => Dashboard(widget._fireStore, widget._storage,
-                  widget._speechProvider, widget.translator)),
+              builder: (context) => Dashboard(widget._fireStore,
+                  widget._storage, widget._speechProvider, widget.translator)),
         );
       } else {
         final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
         _showAlertDialog(errorMsg);
       }
     }
-    
   }
 
   _showAlertDialog(errorMsg) {
