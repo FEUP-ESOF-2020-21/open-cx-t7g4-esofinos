@@ -280,7 +280,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordFilter = new TextEditingController();
   final TextEditingController _usernameFilter = new TextEditingController();
   bool isInProgress = false;
-
+  bool uploadedPicture = false;
   String _email = "";
   String _password = "";
   String _username = "";
@@ -359,16 +359,13 @@ class _RegisterPageState extends State<RegisterPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
-              decoration: new InputDecoration(
-                labelText: 'Email'
-              ),
+              decoration: new InputDecoration(labelText: 'Email'),
             ),
           ),
           new Container(
             child: new TextField(
               controller: _passwordFilter,
-              decoration: new InputDecoration(
-                labelText: 'Password'),
+              decoration: new InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
           ),
@@ -416,33 +413,41 @@ class _RegisterPageState extends State<RegisterPage> {
   void _uploadPressed() {
     profileImgPath += _username;
     widget._storage.uploadImage(profileImgPath);
+    setState(() {
+      uploadedPicture = true;
+    });
   }
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   Future<void> _createAccountPressed() async {
     print('The user wants to create an accoutn with $_email and $_password');
-    String pURL = await widget._storage.storage
+    if (!uploadedPicture) _showAlertDialog("No Profile Picture!");
+
+    else{
+      String pURL = await widget._storage.storage
             .ref()
             .child(profileImgPath)
             .getDownloadURL() ??
         profileImg;
-    final status = await FireAuth().register(
+      final status = await FireAuth().register(
           email: _email,
           password: _password,
           displayName: _username,
           photoURL: pURL);
-    if (status == AuthResultStatus.successful) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Dashboard(widget._fireStore, widget._storage,
-                widget._speechProvider, widget.translator)),
-      );
-    } else {
-      final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
-      _showAlertDialog(errorMsg);
+      if (status == AuthResultStatus.successful) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Dashboard(widget._fireStore, widget._storage,
+                  widget._speechProvider, widget.translator)),
+        );
+      } else {
+        final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
+        _showAlertDialog(errorMsg);
+      }
     }
+    
   }
 
   _showAlertDialog(errorMsg) {
@@ -451,7 +456,7 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              'Login Failed',
+              'Register Failed',
               style: TextStyle(color: Colors.black),
             ),
             content: Text(errorMsg),

@@ -130,13 +130,13 @@ class AuthExceptionHandler {
     print(e.code);
     var status;
     switch (e.code) {
-      case "ERROR_INVALID_EMAIL":
+      case "invalid-email":
         status = AuthResultStatus.invalidEmail;
         break;
-      case "ERROR_WRONG_PASSWORD":
+      case "wrong-password":
         status = AuthResultStatus.wrongPassword;
         break;
-      case "ERROR_USER_NOT_FOUND":
+      case "user-not-found":
         status = AuthResultStatus.userNotFound;
         break;
       case "ERROR_USER_DISABLED":
@@ -145,13 +145,13 @@ class AuthExceptionHandler {
       case "ERROR_TOO_MANY_REQUESTS":
         status = AuthResultStatus.tooManyRequests;
         break;
-      case "ERROR_OPERATION_NOT_ALLOWED":
+      case "operation-not-allowed":
         status = AuthResultStatus.operationNotAllowed;
         break;
-      case "ERROR_EMAIL_ALREADY_IN_USE":
+      case "email-already-in-use":
         status = AuthResultStatus.emailAlreadyExists;
         break;
-      case "ERROR_WEAK_PASSWORD":
+      case "weak-password":
         status = AuthResultStatus.weakPassword;
         break;
       default:
@@ -187,6 +187,10 @@ class AuthExceptionHandler {
       case AuthResultStatus.emailAlreadyExists:
         errorMessage =
             "The email has already been registered. Please login or reset your password.";
+        break;
+      case AuthResultStatus.weakPassword:
+        errorMessage =
+            "Password should be at least 6 characters.";
         break;
       default:
         errorMessage = "An undefined Error happened.";
