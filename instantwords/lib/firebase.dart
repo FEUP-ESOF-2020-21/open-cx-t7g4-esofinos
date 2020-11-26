@@ -69,6 +69,17 @@ class FireStorage {
         .catchError((error) => print("Failed to add conference: $error"));
   }
 
+  addVisitor(conferenceName, uid) {
+    FirebaseFirestore.instance
+        .collection('conferences')
+        .doc(conferenceName)
+        .update({
+          'visitors': FieldValue.arrayUnion([uid])
+        })
+        .then((value) => print("Conferemce Added"))
+        .catchError((error) => print("Failed to add conference: $error"));
+  }
+
   Future<List<QueryDocumentSnapshot>> getConferences() async {
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection("conferences").get();
@@ -84,10 +95,35 @@ class FireStorage {
     return -1;
   }
 
+  Future<List<QueryDocumentSnapshot>> getNonOwnedConferences(
+      String owner) async {
+    QuerySnapshot snapshotLess = await FirebaseFirestore.instance
+        .collection("conferences")
+        .where('owner', isLessThan: owner)
+        .get();
+    QuerySnapshot snapshotGreat = await FirebaseFirestore.instance
+        .collection("conferences")
+        .where('owner', isGreaterThan: owner)
+        .get();
+    
+    List<QueryDocumentSnapshot> snapshot = [...snapshotLess.docs, ...snapshotGreat.docs].toSet().toList();
+    print(snapshot);
+    return snapshot;
+  }
+
   Future<List<QueryDocumentSnapshot>> getOwnerConferences(String owner) async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("conferences")
         .where('owner', isEqualTo: owner)
+        .get();
+    return snapshot.docs;
+  }
+
+  Future<List<QueryDocumentSnapshot>> getAttendeeConferences(
+      String attendee) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("conferences")
+        .where('visitors', arrayContains: attendee)
         .get();
     return snapshot.docs;
   }

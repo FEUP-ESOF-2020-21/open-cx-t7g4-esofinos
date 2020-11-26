@@ -53,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _getConferences() {
     return FutureBuilder(
-        future: widget._storage.getConferences(),
+        future: widget._storage.getNonOwnedConferences(context.watch<FireAuth>().currentUser.uid),
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
@@ -63,7 +63,7 @@ class _DashboardState extends State<Dashboard> {
             itemBuilder: (BuildContext context, int index) {
               return new RaisedButton(
                 onPressed: () =>
-                    _conferencePressed(index, content[index]['language']),
+                    _conferencePressed(index, content[index].id.toString(), content[index]['language']),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -106,7 +106,9 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _conferencePressed(int index, String language) {
+  void _conferencePressed(int index, String name, String language) {
+    widget._storage.addVisitor(
+        name, context.read<FireAuth>().currentUser.uid);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -121,6 +123,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _createConferencePressed() {
+    
     Navigator.push(
         context,
         MaterialPageRoute(

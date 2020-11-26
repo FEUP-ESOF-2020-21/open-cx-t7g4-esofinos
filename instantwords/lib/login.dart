@@ -193,7 +193,10 @@ class _AccountPageState extends State<AccountPage> {
           child: new Column(
             children: <Widget>[
               _buildUserFields(),
-              _buildConferenceBlocks(),
+              Text("Your Conferences:",textScaleFactor: 2),
+              _buildCreatedConferenceBlocks(),
+              Text("Conferences you attended:",textScaleFactor: 2),
+              _buildAttendedConferenceBlocks(),
               _buildButton(),
             ],
           ),
@@ -219,13 +222,13 @@ class _AccountPageState extends State<AccountPage> {
                     .currentUser
                     .photoURL ??
                 "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
-            radius: 150,
+            radius: 100,
           ),
           Text("E-mail: " + context.watch<FireAuth>().currentUser.email,
               textScaleFactor: 1.5),
           Text("Username: " + context.watch<FireAuth>().currentUser.displayName,
               textScaleFactor: 1.5),
-          Text("Conferences:",textScaleFactor: 2),
+          
         ],
       ),
     );
@@ -266,13 +269,25 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _buildConferenceBlocks() {
+  Widget _buildCreatedConferenceBlocks() {
     return Expanded(
       child: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: Padding(
           padding: EdgeInsets.all(10),
           child: _getConferences(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAttendedConferenceBlocks() {
+    return Expanded(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: _getAttendedConferences(),
         ),
       ),
     );
@@ -291,6 +306,38 @@ class _AccountPageState extends State<AccountPage> {
               return new RaisedButton(
                 onPressed: () => _goToConferencePressed(
                     content[index].id.toString(), content[index]['language']),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: new ListTile(
+                        leading: Icon(Icons.analytics, size: 50),
+                        title: Text(content[index].id.toString(),
+                            textScaleFactor: 2),
+                        subtitle: Text(content[index]['language'],
+                            textScaleFactor: 1.2),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Widget _getAttendedConferences() {
+    return FutureBuilder(
+        future: widget._storage.getAttendeeConferences(context.watch<FireAuth>().currentUser.uid),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (!snapshot.hasData) return new Container();
+          List<QueryDocumentSnapshot> content = snapshot.data;
+          widget.conferences_Size = content.length;
+          return new ListView.builder(
+            itemCount: widget.conferences_Size,
+            itemBuilder: (BuildContext context, int index) {
+              return new RaisedButton(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
