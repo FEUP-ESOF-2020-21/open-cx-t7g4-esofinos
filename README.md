@@ -45,7 +45,7 @@ Enabling everyone, specially people with hearing disabilities, to experience con
 ---
 ## Elevator Pitch
 
-Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. InstantWords, using Speech-To-Text technology, provides transcripts, directly to your phone, in any language enabling a brand new audience to enjoy them.
+Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. InstantWords, using Speech-To-Text technology, provides transcripts, directly to your phone, in any most languages enabling a brand new audience to enjoy them.
 
 
 
