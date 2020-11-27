@@ -54,7 +54,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 ### Use case diagram 
 
-![Use Case Diagram](https://i.imgur.com/JX239hP.png)
+![Use Case Diagram](https://media.discordapp.net/attachments/757917778232737823/781806432680804352/UseCaseDiagram.png)
 
 
 #### Register/Login
@@ -98,7 +98,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 #### User Story Map
 
-![User Story Map](https://i.imgur.com/jFVvTgA.png)
+![User Story Map](https://i.imgur.com/uGvfUe4.png)
 
 #### Story #1 **EPIC**
 
