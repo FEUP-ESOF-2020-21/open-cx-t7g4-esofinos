@@ -87,7 +87,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore, storage, speechProvider,translator),
+        home: LoginPage(firestore, storage, speechProvider, translator),
       ),
     );
   }

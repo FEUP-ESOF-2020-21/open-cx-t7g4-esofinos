@@ -14,7 +14,52 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  int conferences_Size;
+  TextEditingController _searchController = TextEditingController();
+
+  Future resultsLoaded;
+  List _allResults = [];
+  List _resultsList = [];
+
+  int conferencesSize;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  _onSearchChanged() {
+    searchResultsList();
+  }
+
+  searchResultsList() async {
+    var showResults = [];
+
+    if (_searchController.text != "") {
+      List<QueryDocumentSnapshot> conferences =
+          await widget._storage.getConferences();
+      for (var confSnapshot in conferences) {
+        var language = confSnapshot['language'];
+
+        if (language.contains(_searchController.text.toLowerCase())) {
+          showResults.add(confSnapshot);
+        }
+      }
+    } else {
+      showResults = List.from(_allResults);
+    }
+    setState(() {
+      _resultsList = showResults;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -24,18 +69,25 @@ class _DashboardState extends State<Dashboard> {
         padding: EdgeInsets.all(16.0),
         child: new Column(
           children: <Widget>[
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+              ),
+            ),
+            Expanded(
+                child: ListView.builder(
+              itemCount: _resultsList.length,
+              itemBuilder: (BuildContext context, int index) => buildTripCard(
+                  context, _resultsList[index]), //por aqui as opcoes
+            )),
             _buildAddConference(),
             _buildConferenceBlocks(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
-      title: new Text("Conferences"),
-      centerTitle: true,
     );
   }
 
@@ -53,17 +105,18 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _getConferences() {
     return FutureBuilder(
-        future: widget._storage.getNonOwnedConferences(context.watch<FireAuth>().currentUser.uid),
+        future: widget._storage
+            .getNonOwnedConferences(context.watch<FireAuth>().currentUser.uid),
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
-          conferences_Size = content.length;
+          conferencesSize = content.length;
           return new ListView.builder(
-            itemCount: conferences_Size,
+            itemCount: conferencesSize,
             itemBuilder: (BuildContext context, int index) {
               return new RaisedButton(
-                onPressed: () =>
-                    _conferencePressed(index, content[index].id.toString(), content[index]['language']),
+                onPressed: () => _conferencePressed(index,
+                    content[index].id.toString(), content[index]['language']),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -107,8 +160,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _conferencePressed(int index, String name, String language) {
-    widget._storage.addVisitor(
-        name, context.read<FireAuth>().currentUser.uid);
+    widget._storage.addVisitor(name, context.read<FireAuth>().currentUser.uid);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -123,7 +175,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _createConferencePressed() {
-    
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -131,7 +182,7 @@ class _DashboardState extends State<Dashboard> {
                 widget._fireStore,
                 widget._storage,
                 widget._speechProvider,
-                this.conferences_Size,
+                this.conferencesSize,
                 widget.translator)));
   }
 }
@@ -140,11 +191,11 @@ class CreateConferencePage extends StatefulWidget {
   final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
-  int conference_Size;
+  int conferenceSize;
   final translator;
 
   CreateConferencePage(this._fireStore, this._storage, this._speechProvider,
-      this.conference_Size, this.translator);
+      this.conferenceSize, this.translator);
 
   @override
   State<CreateConferencePage> createState() => new _CreateConferencePageState();
@@ -257,7 +308,7 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
                 widget._fireStore,
                 widget._storage,
                 widget._speechProvider,
-                widget.conference_Size,
+                widget.conferenceSize,
                 _language,
                 widget.translator)));
   }
