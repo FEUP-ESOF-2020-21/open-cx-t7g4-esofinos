@@ -337,7 +337,10 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 ### Domain model
 
-To better understand the context of the software system, it is very useful to have a simple UML class diagram with all the key concepts (names, attributes) and relationships involved of the problem domain addressed by your module.
+![Domain UML](https://cdn.discordapp.com/attachments/757917778232737823/781829656608636928/problem.png)
+
+**Description**: All users have one single profile. A user can be a *Speaker* or an *Attendee* depending on the situation.
+A conference can be attended by several *Attendees* and can only have **one** *Speaker*.
 
 ---
 
