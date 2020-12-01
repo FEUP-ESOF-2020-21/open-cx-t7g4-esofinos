@@ -19,6 +19,7 @@ class _DashboardState extends State<Dashboard> {
   Future resultsLoaded;
   List _allResults = [];
   List _resultsList = [];
+  final _languageList = LanguageList();
 
   int conferencesSize;
 
@@ -26,6 +27,7 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    searchResultsList();
   }
 
   @override
@@ -40,20 +42,29 @@ class _DashboardState extends State<Dashboard> {
   }
 
   searchResultsList() async {
+    if (_allResults.isEmpty) {
+      _allResults = await widget._storage
+          .getNonOwnedConferences(context.read<FireAuth>().currentUser.uid);
+    }
+
     var showResults = [];
 
     if (_searchController.text != "") {
-      List<QueryDocumentSnapshot> conferences =
-          await widget._storage.getConferences();
-      for (var confSnapshot in conferences) {
-        var language = confSnapshot['language'];
+      var text = _searchController.text.toLowerCase();
+      for (var confSnapshot in _allResults) {
+        var languageID = confSnapshot['language'].toString().toLowerCase();
+        var languageName =
+            _languageList[languageID.split('_')[0]].toString().toLowerCase();
+        var id = confSnapshot.id.toLowerCase();
 
-        if (language.contains(_searchController.text.toLowerCase())) {
+        if (languageID.contains(text) ||
+            languageName.contains(text) ||
+            id.contains(text)) {
           showResults.add(confSnapshot);
         }
       }
     } else {
-      showResults = List.from(_allResults);
+      showResults = _allResults;
     }
     setState(() {
       _resultsList = showResults;
@@ -69,22 +80,53 @@ class _DashboardState extends State<Dashboard> {
         padding: EdgeInsets.all(16.0),
         child: new Column(
           children: <Widget>[
+            _buildAddConference(),
+            Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 10),
+              child: Text(
+                "Search Conference",
+                textScaleFactor: 2,
+              ),
+            ),
             Padding(
               padding:
                   const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
               child: TextField(
                 controller: _searchController,
-                decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    labelText: "Language or Conference Name"),
               ),
             ),
             Expanded(
-                child: ListView.builder(
-              itemCount: _resultsList.length,
-              itemBuilder: (BuildContext context, int index) => buildTripCard(
-                  context, _resultsList[index]), //por aqui as opcoes
-            )),
-            _buildAddConference(),
-            _buildConferenceBlocks(),
+              child: ListView.builder(
+                itemCount: _resultsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return new RaisedButton(
+                    onPressed: () => _conferencePressed(
+                        index,
+                        _resultsList[index].id.toString(),
+                        _resultsList[index]['language']),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: new ListTile(
+                            leading: Icon(Icons.analytics, size: 50),
+                            title: Text(_resultsList[index].id.toString(),
+                                textScaleFactor: 2),
+                            subtitle: Text(_resultsList[index]['language'],
+                                textScaleFactor: 1.2),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            //_buildConferenceBlocks(),
           ],
         ),
       ),
