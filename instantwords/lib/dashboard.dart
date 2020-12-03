@@ -28,6 +28,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     _searchController.addListener(_onSearchChanged);
     searchResultsList();
+    updateConferencesSize();
   }
 
   @override
@@ -39,6 +40,11 @@ class _DashboardState extends State<Dashboard> {
 
   _onSearchChanged() {
     searchResultsList();
+  }
+
+  updateConferencesSize() async {
+    var list = await widget._storage.getConferences();
+    this.conferencesSize = list.length;
   }
 
   searchResultsList() async {
@@ -153,9 +159,9 @@ class _DashboardState extends State<Dashboard> {
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
-          conferencesSize = content.length;
+          var n = content.length;
           return new ListView.builder(
-            itemCount: conferencesSize,
+            itemCount: n,
             itemBuilder: (BuildContext context, int index) {
               return new RaisedButton(
                 onPressed: () => _conferencePressed(index,
@@ -181,8 +187,8 @@ class _DashboardState extends State<Dashboard> {
         });
   }
 
-  void _scanQR() async{
-	String indexStr = await scanner.scan();
+  void _scanQR() async {
+    String indexStr = await scanner.scan();
     int index = int.parse(indexStr);
     Navigator.push(
         context,
@@ -195,8 +201,8 @@ class _DashboardState extends State<Dashboard> {
               "en-US",
               widget.translator),
         ));
-
   }
+
   Widget _buildScanQR() {
     return Padding(
       padding: EdgeInsets.all(10),
@@ -253,7 +259,6 @@ class _DashboardState extends State<Dashboard> {
               language,
               widget.translator),
         ));
-
   }
 
   void _createConferencePressed() {

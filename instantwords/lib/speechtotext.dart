@@ -85,14 +85,11 @@ class _SpeechProviderExampleWidgetState
     );
   }
 
-
   void qrGen() async {
-	String index = _documentIndex.toString();
-	Uint8List contents = await scanner.generateBarCode(index);
+    String index = _documentIndex.toString();
+    Uint8List contents = await scanner.generateBarCode(index);
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Picture(contents)));
+        context, MaterialPageRoute(builder: (context) => Picture(contents)));
   }
 
   Widget _buildButtons(speechProvider) {
@@ -139,9 +136,7 @@ class _SpeechProviderExampleWidgetState
             return FloatingActionButton(
               heroTag: "btn4",
               child: Text('QR'),
-              onPressed: () => qrGen()
-                
-              ,
+              onPressed: () => qrGen(),
             );
           },
         ),
@@ -170,9 +165,6 @@ class _SpeechProviderExampleWidgetState
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (speechProvider.hasResults) {
-                      print("In builder, wrote to: " +
-                          snapshot
-                              .data.documents[this._documentIndex].documentID);
                       _storage.updateConference(
                           snapshot
                               .data.documents[this._documentIndex].documentID,
