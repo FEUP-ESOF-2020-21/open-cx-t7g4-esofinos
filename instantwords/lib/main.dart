@@ -17,6 +17,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:translator/translator.dart';
 import 'package:translator/src/langs/language.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
+import 'dart:typed_data';
 
 part 'firebase.dart';
 part 'widgets.dart';

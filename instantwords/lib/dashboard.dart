@@ -81,6 +81,7 @@ class _DashboardState extends State<Dashboard> {
         child: new Column(
           children: <Widget>[
             _buildAddConference(),
+            _buildScanQR(),
             Padding(
               padding: EdgeInsets.only(top: 20, bottom: 10),
               child: Text(
@@ -180,6 +181,43 @@ class _DashboardState extends State<Dashboard> {
         });
   }
 
+  void _scanQR() async{
+	String indexStr = await scanner.scan();
+    int index = int.parse(indexStr);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SpectatorWidget(
+              widget._fireStore,
+              widget._storage,
+              widget._speechProvider,
+              index,
+              "en-US",
+              widget.translator),
+        ));
+
+  }
+  Widget _buildScanQR() {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: RaisedButton(
+        onPressed: _scanQR,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: const ListTile(
+                leading: Icon(Icons.add_to_photos, size: 40),
+                title: Text('Scan QR', textScaleFactor: 1.5),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAddConference() {
     return Padding(
       padding: EdgeInsets.all(10),
@@ -203,6 +241,7 @@ class _DashboardState extends State<Dashboard> {
 
   void _conferencePressed(int index, String name, String language) {
     widget._storage.addVisitor(name, context.read<FireAuth>().currentUser.uid);
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -214,6 +253,7 @@ class _DashboardState extends State<Dashboard> {
               language,
               widget.translator),
         ));
+
   }
 
   void _createConferencePressed() {

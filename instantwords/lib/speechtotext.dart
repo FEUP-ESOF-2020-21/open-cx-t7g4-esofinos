@@ -85,6 +85,16 @@ class _SpeechProviderExampleWidgetState
     );
   }
 
+
+  void qrGen() async {
+	String index = _documentIndex.toString();
+	Uint8List contents = await scanner.generateBarCode(index);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Picture(contents)));
+  }
+
   Widget _buildButtons(speechProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -119,6 +129,19 @@ class _SpeechProviderExampleWidgetState
               onPressed: () => _stop(
                 speechProvider,
               ),
+            );
+          },
+        ),
+        StreamBuilder(
+          stream:
+              FirebaseFirestore.instance.collection('conferences').snapshots(),
+          builder: (context, snapshot) {
+            return FloatingActionButton(
+              heroTag: "btn4",
+              child: Text('QR'),
+              onPressed: () => qrGen()
+                
+              ,
             );
           },
         ),
