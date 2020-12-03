@@ -15,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:translator/translator.dart';
+import 'package:translator/src/langs/language.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 part 'firebase.dart';
@@ -87,7 +88,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore, storage, speechProvider,translator),
+        home: LoginPage(firestore, storage, speechProvider, translator),
       ),
     );
   }
