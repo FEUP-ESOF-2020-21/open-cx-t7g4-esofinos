@@ -6,7 +6,8 @@ class LoginPage extends StatefulWidget {
   final SpeechToTextProvider _speechProvider;
   final translator;
 
-  LoginPage(this._fireStore, this._storage, this._speechProvider, this.translator);
+  LoginPage(
+      this._fireStore, this._storage, this._speechProvider, this.translator);
 
   @override
   State<LoginPage> createState() => new _LoginPageState();
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String _email = "";
   String _password = "";
+  bool isInProgress = false;
 
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
@@ -42,15 +44,20 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
+    return SafeArea(
+      child: ModalProgressHUD(
+        inAsyncCall: isInProgress,
+        child: new Scaffold(
+          appBar: _buildBar(context),
+          body: new Container(
+            padding: EdgeInsets.all(16.0),
+            child: new Column(
+              children: <Widget>[
+                _buildTextFields(),
+                _buildButtons(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -101,8 +108,11 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => RegisterPage(widget._fireStore,
-                          widget._storage, widget._speechProvider,widget.translator)));
+                      builder: (context) => RegisterPage(
+                          widget._fireStore,
+                          widget._storage,
+                          widget._speechProvider,
+                          widget.translator)));
             },
           ),
           new FlatButton(
@@ -116,15 +126,41 @@ class _LoginPageState extends State<LoginPage> {
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
-  void _loginPressed() {
+  void _loginPressed() async {
+    setState(() {
+      isInProgress = true;
+    });
     print('The user wants to login with $_email and $_password');
-    context.read<FireAuth>().loginAccount(email: _email, password: _password);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Dashboard(
-              widget._fireStore, widget._storage, widget._speechProvider, widget.translator)),
-    );
+    final status =
+        await FireAuth().loginAccount(email: _email, password: _password);
+    setState(() {
+      isInProgress = false;
+    });
+    if (status == AuthResultStatus.successful) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Dashboard(widget._fireStore, widget._storage,
+                widget._speechProvider, widget.translator)),
+      );
+    } else {
+      final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
+      _showAlertDialog(errorMsg);
+    }
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Login Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
   }
 
   void _passwordReset() {
@@ -137,8 +173,11 @@ class AccountPage extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
+  final bool needPop = false;
+  int conferences_Size;
 
-  AccountPage(this._fireStore, this._storage, this._speechProvider,this.translator);
+  AccountPage(
+      this._fireStore, this._storage, this._speechProvider, this.translator);
   @override
   State<AccountPage> createState() => new _AccountPageState();
 }
@@ -150,11 +189,17 @@ class _AccountPageState extends State<AccountPage> {
       appBar: _buildBar(context),
       body: new Container(
         padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildUserFields(),
-            _buildButton(),
-          ],
+        child: new Center(
+          child: new Column(
+            children: <Widget>[
+              _buildUserFields(),
+              Text("Your Conferences:",textScaleFactor: 2),
+              _buildCreatedConferenceBlocks(),
+              Text("Conferences you attended:",textScaleFactor: 2),
+              _buildAttendedConferenceBlocks(),
+              _buildButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -177,12 +222,13 @@ class _AccountPageState extends State<AccountPage> {
                     .currentUser
                     .photoURL ??
                 "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
-            radius: 200,
+            radius: 100,
           ),
-          Text(context.watch<FireAuth>().currentUser.email,
+          Text("E-mail: " + context.watch<FireAuth>().currentUser.email,
               textScaleFactor: 1.5),
-          Text(context.watch<FireAuth>().currentUser.displayName,
+          Text("Username: " + context.watch<FireAuth>().currentUser.displayName,
               textScaleFactor: 1.5),
+          
         ],
       ),
     );
@@ -208,8 +254,11 @@ class _AccountPageState extends State<AccountPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LoginPage(widget._fireStore,
-                          widget._storage, widget._speechProvider, widget.translator)),
+                      builder: (context) => LoginPage(
+                          widget._fireStore,
+                          widget._storage,
+                          widget._speechProvider,
+                          widget.translator)),
                 );
               },
               elevation: 10.0,
@@ -219,6 +268,110 @@ class _AccountPageState extends State<AccountPage> {
       ),
     );
   }
+
+  Widget _buildCreatedConferenceBlocks() {
+    return Expanded(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: _getConferences(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAttendedConferenceBlocks() {
+    return Expanded(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: _getAttendedConferences(),
+        ),
+      ),
+    );
+  }
+
+  Widget _getConferences() {
+    return FutureBuilder(
+        future: widget._storage.getOwnerConferences(context.watch<FireAuth>().currentUser.uid),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (!snapshot.hasData) return new Container();
+          List<QueryDocumentSnapshot> content = snapshot.data;
+          widget.conferences_Size = content.length;
+          return new ListView.builder(
+            itemCount: widget.conferences_Size,
+            itemBuilder: (BuildContext context, int index) {
+              return new RaisedButton(
+                onPressed: () => _goToConferencePressed(
+                    content[index].id.toString(), content[index]['language']),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: new ListTile(
+                        leading: Icon(Icons.analytics, size: 50),
+                        title: Text(content[index].id.toString(),
+                            textScaleFactor: 2),
+                        subtitle: Text(content[index]['language'],
+                            textScaleFactor: 1.2),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Widget _getAttendedConferences() {
+    return FutureBuilder(
+        future: widget._storage.getAttendeeConferences(context.watch<FireAuth>().currentUser.uid),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (!snapshot.hasData) return new Container();
+          List<QueryDocumentSnapshot> content = snapshot.data;
+          widget.conferences_Size = content.length;
+          return new ListView.builder(
+            itemCount: widget.conferences_Size,
+            itemBuilder: (BuildContext context, int index) {
+              return new RaisedButton(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: new ListTile(
+                        leading: Icon(Icons.analytics, size: 50),
+                        title: Text(content[index].id.toString(),
+                            textScaleFactor: 2),
+                        subtitle: Text(content[index]['language'],
+                            textScaleFactor: 1.2),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  void _goToConferencePressed(String id, String language) async {
+    int confIndex = await widget._storage.getConferenceByID(id);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProviderDemoApp(
+                widget._fireStore,
+                widget._storage,
+                widget._speechProvider,
+                confIndex,
+                language,
+                widget.translator)));
+  }
 }
 
 class RegisterPage extends StatefulWidget {
@@ -227,7 +380,8 @@ class RegisterPage extends StatefulWidget {
   final SpeechToTextProvider _speechProvider;
   final translator;
 
-  RegisterPage(this._fireStore, this._storage, this._speechProvider,this.translator);
+  RegisterPage(
+      this._fireStore, this._storage, this._speechProvider, this.translator);
 
   @override
   State<RegisterPage> createState() => new _RegisterPageState();
@@ -237,7 +391,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   final TextEditingController _usernameFilter = new TextEditingController();
-
+  bool isInProgress = false;
+  bool uploadedPicture = false;
   String _email = "";
   String _password = "";
   String _username = "";
@@ -283,15 +438,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
+    return SafeArea(
+      child: ModalProgressHUD(
+        inAsyncCall: isInProgress,
+        child: new Scaffold(
+          appBar: _buildBar(context),
+          body: new Container(
+            padding: EdgeInsets.all(16.0),
+            child: new Column(
+              children: <Widget>[
+                _buildTextFields(),
+                _buildButtons(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -350,8 +510,11 @@ class _RegisterPageState extends State<RegisterPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LoginPage(widget._fireStore,
-                          widget._storage, widget._speechProvider,widget.translator)));
+                      builder: (context) => LoginPage(
+                          widget._fireStore,
+                          widget._storage,
+                          widget._speechProvider,
+                          widget.translator)));
             },
           )
         ],
@@ -362,27 +525,53 @@ class _RegisterPageState extends State<RegisterPage> {
   void _uploadPressed() {
     profileImgPath += _username;
     widget._storage.uploadImage(profileImgPath);
+    setState(() {
+      uploadedPicture = true;
+    });
   }
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   Future<void> _createAccountPressed() async {
     print('The user wants to create an accoutn with $_email and $_password');
-    String pURL = await widget._storage.storage
-            .ref()
-            .child(profileImgPath)
-            .getDownloadURL() ??
-        profileImg;
-    context.read<FireAuth>().register(
-        email: _email,
-        password: _password,
-        displayName: _username,
-        photoURL: pURL);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Dashboard(
-              widget._fireStore, widget._storage, widget._speechProvider,widget.translator)),
-    );
+    if (!uploadedPicture)
+      _showAlertDialog("No Profile Picture!");
+    else {
+      String pURL = await widget._storage.storage
+              .ref()
+              .child(profileImgPath)
+              .getDownloadURL() ??
+          profileImg;
+      final status = await FireAuth().register(
+          email: _email,
+          password: _password,
+          displayName: _username,
+          photoURL: pURL);
+      if (status == AuthResultStatus.successful) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Dashboard(widget._fireStore,
+                  widget._storage, widget._speechProvider, widget.translator)),
+        );
+      } else {
+        final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
+        _showAlertDialog(errorMsg);
+      }
+    }
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Register Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
   }
 }

@@ -15,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:translator/translator.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 part 'firebase.dart';
 part 'widgets.dart';
