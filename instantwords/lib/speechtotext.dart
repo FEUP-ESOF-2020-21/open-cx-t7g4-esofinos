@@ -108,8 +108,6 @@ class _SpeechProviderExampleWidgetState
                       : Icons.mic_none),
               onPressed: () => {
                 _startListen(),
-                print("Listening to: " +
-                    snapshot.data.documents[this._documentIndex].documentID),
                 _listen(speechProvider,
                     snapshot.data.documents[this._documentIndex].documentID)
               },
@@ -227,19 +225,16 @@ class _SpeechProviderExampleWidgetState
   _listen(speechProvider, document) {
     if (_stopListen) return;
     _stopListen = false;
-    print("In listen (start), wrote to: " + document);
     speechProvider.listen(partialResults: true, localeId: _conferenceLanguage);
     speechProvider.stream.listen((recognitionEvent) async {
       switch (recognitionEvent.eventType) {
         case SpeechRecognitionEventType.finalRecognitionEvent:
-          print("In listen (pause), wrote to: " + document);
           _storage.updateConference(
               document, {'text': speechProvider.lastResult.recognizedWords});
           speechProvider.listen(
               partialResults: true, localeId: _conferenceLanguage);
           break;
         case SpeechRecognitionEventType.errorEvent:
-          print("In listen (error), wrote to: " + document);
           _storage.updateConference(
               document, {'text': speechProvider.lastResult.recognizedWords});
           speechProvider.listen(

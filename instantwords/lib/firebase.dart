@@ -39,8 +39,6 @@ class FireStorage {
 
       if (image != null) {
         var downloadURL = await uploadFile(profileImgPath, file);
-
-        print(downloadURL);
       } else {
         print('No path Received');
       }
@@ -50,7 +48,6 @@ class FireStorage {
   }
 
   updateConference(document, newValues) {
-    print("In firebase, wrote to: " + document);
     FirebaseFirestore.instance
         .collection('conferences')
         .doc(document)
@@ -65,7 +62,7 @@ class FireStorage {
         .collection('conferences')
         .doc(conferenceName)
         .set({'language': language, 'text': "", 'owner': uid})
-        .then((value) => print("Conferemce Added"))
+        .then((value) => print("Conference Added"))
         .catchError((error) => print("Failed to add conference: $error"));
   }
 
@@ -76,7 +73,7 @@ class FireStorage {
         .update({
           'visitors': FieldValue.arrayUnion([uid])
         })
-        .then((value) => print("Conferemce Added"))
+        .then((value) => print("Conference Added"))
         .catchError((error) => print("Failed to add conference: $error"));
   }
 
@@ -107,7 +104,6 @@ class FireStorage {
         .get();
     
     List<QueryDocumentSnapshot> snapshot = [...snapshotLess.docs, ...snapshotGreat.docs].toSet().toList();
-    print(snapshot);
     return snapshot;
   }
 
@@ -180,7 +176,6 @@ class FireAuth {
 
 class AuthExceptionHandler {
   static handleException(e) {
-    print(e.code);
     var status;
     switch (e.code) {
       case "invalid-email":

@@ -67,7 +67,6 @@ class InstantWordsApp extends StatelessWidget {
       SpeechToTextProvider(SpeechToText());
 
   Future<void> initSpeechState() async {
-    print("Initializing speechProvider!");
     await speechProvider.initialize();
   }
 
