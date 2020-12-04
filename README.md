@@ -311,6 +311,32 @@ Then Spectators can join my session and read the transcript.
 
 ---
 
+#### Story #11
+
+As an user, I want to be able to login, so that I can attend conferences.
+
+**Mockup**
+
+![Login Menu](https://i.imgur.com/1vmbEy5.png)
+
+**Acceptance Tests**
+
+```gherkin
+Given I want to join/create conferences,
+When I fill with valid credentials,
+Then I should be redirected to the conference dashboard.
+```
+
+```gherkin
+Given I want to join/create conferences,
+When I fill with invalid credentials,
+Then I should be prompted an error.
+```
+
+**Value:** Must have
+**Effort:** S
+
+
 
 
 This section will contain the requirements of the product described as **user stories**, organized in a global **[user story map](https://plan.io/blog/user-story-mapping/)** with **user roles** or **themes**.
