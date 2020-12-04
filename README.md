@@ -369,7 +369,7 @@ The goal of this subsection is to document the high-level physical structure of 
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
 
-For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text) and [Translation](https://pub.dev/packages/translator) functionalities.
+For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text), [Translation](https://pub.dev/packages/translator)  and [QR Code generation](https://pub.dev/packages/qrscan) functionalities.
 
 ![Physical architecture](https://i.imgur.com/CWGckYj.png)
 
