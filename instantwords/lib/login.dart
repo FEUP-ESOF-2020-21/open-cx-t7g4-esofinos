@@ -250,6 +250,8 @@ class _AccountPageState extends State<AccountPage> {
                 textScaleFactor: 2.0,
               ),
               onPressed: () async {
+String photoScanResult = await scanner.scan();
+/*
                 context.read<FireAuth>().signOut();
                 Navigator.pushReplacement(
                   context,
@@ -260,6 +262,7 @@ class _AccountPageState extends State<AccountPage> {
                           widget._speechProvider,
                           widget.translator)),
                 );
+*/
               },
               elevation: 10.0,
             ),

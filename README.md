@@ -45,7 +45,7 @@ Enabling everyone, specially people with hearing disabilities, to experience con
 ---
 ## Elevator Pitch
 
-Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. InstantWords, using Speech-To-Text technology, provides transcripts, directly to your phone, in any language enabling a brand new audience to enjoy them.
+Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. InstantWords, using Speech-To-Text technology, provides transcripts, directly to your phone, in a wide array of languages enabling a brand new audience to enjoy them.
 
 
 
@@ -54,7 +54,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 ### Use case diagram 
 
-![Use Case Diagram](https://imgur.com/DLCiJpW)
+![Use Case Diagram](https://i.imgur.com/7fNntzi.png)
 
 
 #### Register/Login
@@ -98,7 +98,7 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 #### User Story Map
 
-![User Story Map](https://imgur.com/jFVvTgA)
+![User Story Map](https://i.imgur.com/uGvfUe4.png)
 
 #### Story #1 **EPIC**
 
@@ -311,6 +311,32 @@ Then Spectators can join my session and read the transcript.
 
 ---
 
+#### Story #11
+
+As an user, I want to be able to login, so that I can attend conferences.
+
+**Mockup**
+
+![Login Menu](https://i.imgur.com/1vmbEy5.png)
+
+**Acceptance Tests**
+
+```gherkin
+Given I want to join/create conferences,
+When I fill with valid credentials,
+Then I should be redirected to the conference dashboard.
+```
+
+```gherkin
+Given I want to join/create conferences,
+When I fill with invalid credentials,
+Then I should be prompted an error.
+```
+
+**Value:** Must have
+**Effort:** S
+
+
 
 
 This section will contain the requirements of the product described as **user stories**, organized in a global **[user story map](https://plan.io/blog/user-story-mapping/)** with **user roles** or **themes**.
@@ -337,7 +363,10 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 ### Domain model
 
-To better understand the context of the software system, it is very useful to have a simple UML class diagram with all the key concepts (names, attributes) and relationships involved of the problem domain addressed by your module.
+![Domain UML](https://cdn.discordapp.com/attachments/757917778232737823/781829656608636928/problem.png)
+
+**Description**: All users have one single profile. A user can be a *Speaker* or an *Attendee* depending on the situation.
+A conference can be attended by several *Attendees* and can only have **one** *Speaker*.
 
 ---
 
@@ -366,7 +395,7 @@ The goal of this subsection is to document the high-level physical structure of 
 
 It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
 
-For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text) and [Translation](https://pub.dev/packages/translator) functionalities.
+For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text), [Translation](https://pub.dev/packages/translator)  and [QR Code generation](https://pub.dev/packages/qrscan) functionalities.
 
 ![Physical architecture](https://i.imgur.com/CWGckYj.png)
 
