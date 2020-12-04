@@ -18,10 +18,13 @@ import 'package:qrscan/qrscan.dart' as scanner;
 import 'dart:typed_data';
 
 part 'firebase.dart';
-part 'widgets.dart';
-part 'speechtotext.dart';
-part 'login.dart';
-part 'dashboard.dart';
+part 'widgets/widgets.dart';
+part 'speechtotext/speechtotext.dart';
+part 'authentication/login.dart';
+part 'authentication/register.dart';
+part 'authentication/account.dart';
+part 'conferences/dashboard.dart';
+part 'conferences/createconfpage.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +63,6 @@ class MyApp extends StatelessWidget {
 }
 
 class InstantWordsApp extends StatelessWidget {
-  final FireStore firestore = FireStore();
   final FireStorage storage = FireStorage();
   final translator = GoogleTranslator();
   final SpeechToTextProvider speechProvider =
@@ -86,7 +88,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore, storage, speechProvider, translator),
+        home: LoginPage(storage, speechProvider, translator),
       ),
     );
   }

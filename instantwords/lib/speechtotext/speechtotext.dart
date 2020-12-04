@@ -1,16 +1,14 @@
-part of 'main.dart';
+part of '../main.dart';
 
 class ProviderDemoApp extends StatefulWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
   int _documentIndex;
   String _conferenceLanguage;
-  String _toBeTranslated;
 
-  ProviderDemoApp(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage, this.translator);
+  ProviderDemoApp(this._storage, this._speechProvider, this._documentIndex,
+      this._conferenceLanguage, this.translator);
 
   @override
   _ProviderDemoAppState createState() => new _ProviderDemoAppState();
@@ -22,41 +20,37 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
       value: widget._speechProvider,
       child: Scaffold(
-        appBar: AppBarWidget(widget._fireStore, widget._storage,
-            widget._speechProvider, widget.translator),
-        body: SpeechProviderExampleWidget(widget._fireStore, widget._storage,
-            widget._documentIndex, widget._conferenceLanguage),
+        appBar: AppBarWidget(
+            widget._storage, widget._speechProvider, widget.translator),
+        body: SpeechProviderExampleWidget(
+            widget._storage, widget._documentIndex, widget._conferenceLanguage),
       ),
     );
   }
 }
 
 class SpeechProviderExampleWidget extends StatefulWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   int _documentIndex;
   String _conferenceLanguage;
-  String _toBeTranslated;
-  SpeechProviderExampleWidget(this._fireStore, this._storage,
-      this._documentIndex, this._conferenceLanguage);
+  SpeechProviderExampleWidget(
+      this._storage, this._documentIndex, this._conferenceLanguage);
 
   @override
   _SpeechProviderExampleWidgetState createState() =>
-      _SpeechProviderExampleWidgetState(this._fireStore, this._storage,
-          this._documentIndex, this._conferenceLanguage);
+      _SpeechProviderExampleWidgetState(
+          this._storage, this._documentIndex, this._conferenceLanguage);
 }
 
 class _SpeechProviderExampleWidgetState
     extends State<SpeechProviderExampleWidget> {
-  final FireStore _fireStore;
   final FireStorage _storage;
   int _documentIndex;
   String _conferenceLanguage;
-  String _toBeTranslated;
   bool _stopListen = false;
 
-  _SpeechProviderExampleWidgetState(this._fireStore, this._storage,
-      this._documentIndex, this._conferenceLanguage);
+  _SpeechProviderExampleWidgetState(
+      this._storage, this._documentIndex, this._conferenceLanguage);
 
   @override
   Widget build(BuildContext context) {
@@ -261,15 +255,14 @@ class _SpeechProviderExampleWidgetState
 }
 
 class SpectatorWidget extends StatefulWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
   int _documentIndex;
   String _conferenceLanguage;
 
-  SpectatorWidget(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage, this.translator);
+  SpectatorWidget(this._storage, this._speechProvider, this._documentIndex,
+      this._conferenceLanguage, this.translator);
 
   @override
   _SpectatorWidgetState createState() => new _SpectatorWidgetState();
@@ -281,10 +274,9 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
     return ChangeNotifierProvider<SpeechToTextProvider>.value(
       value: widget._speechProvider,
       child: Scaffold(
-        appBar: AppBarWidget(widget._fireStore, widget._storage,
-            widget._speechProvider, widget.translator),
+        appBar: AppBarWidget(
+            widget._storage, widget._speechProvider, widget.translator),
         body: SpectatorScreen(
-            widget._fireStore,
             widget._storage,
             widget._speechProvider,
             widget._documentIndex,
@@ -296,18 +288,16 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
 }
 
 class SpectatorScreen extends StatefulWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   int _documentIndex;
   String _conferenceLanguage;
   final translator;
-  SpectatorScreen(this._fireStore, this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage, this.translator);
+  SpectatorScreen(this._storage, this._speechProvider, this._documentIndex,
+      this._conferenceLanguage, this.translator);
 
   @override
   _SpectatorScreenState createState() => _SpectatorScreenState(
-      this._fireStore,
       this._storage,
       this._speechProvider,
       this._documentIndex,
@@ -316,7 +306,6 @@ class SpectatorScreen extends StatefulWidget {
 }
 
 class _SpectatorScreenState extends State<SpectatorScreen> {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   int _documentIndex;
@@ -326,7 +315,7 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
   final translator;
   String _translation = "";
 
-  _SpectatorScreenState(this._fireStore, this._storage, this._speechProvider,
+  _SpectatorScreenState(this._storage, this._speechProvider,
       this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override

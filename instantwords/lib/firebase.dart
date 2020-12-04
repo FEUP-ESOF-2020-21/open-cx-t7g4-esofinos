@@ -13,10 +13,6 @@ enum AuthResultStatus {
   weakPassword
 }
 
-class FireStore {
-  static final FirebaseFirestore firestore = FirebaseFirestore.instance;
-}
-
 class FireStorage {
   final storage = FirebaseStorage.instance;
 
@@ -38,7 +34,7 @@ class FireStorage {
       var file = File(image.path);
 
       if (image != null) {
-        var downloadURL = await uploadFile(profileImgPath, file);
+        await uploadFile(profileImgPath, file);
       } else {
         print('No path Received');
       }
@@ -102,8 +98,9 @@ class FireStorage {
         .collection("conferences")
         .where('owner', isGreaterThan: owner)
         .get();
-    
-    List<QueryDocumentSnapshot> snapshot = [...snapshotLess.docs, ...snapshotGreat.docs].toSet().toList();
+
+    List<QueryDocumentSnapshot> snapshot =
+        [...snapshotLess.docs, ...snapshotGreat.docs].toSet().toList();
     return snapshot;
   }
 
@@ -141,8 +138,6 @@ class FireAuth {
     try {
       UserCredential authResult = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      //.then((value) => value.user
-      //.updateProfile(displayName: displayName, photoURL: photoURL));
       if (authResult.user != null) {
         status = AuthResultStatus.successful;
       } else {

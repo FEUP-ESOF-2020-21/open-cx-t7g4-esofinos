@@ -1,13 +1,11 @@
-part of 'main.dart';
+part of '../main.dart';
 
 class Dashboard extends StatefulWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
 
-  Dashboard(
-      this._fireStore, this._storage, this._speechProvider, this.translator);
+  Dashboard(this._storage, this._speechProvider, this.translator);
 
   @override
   State<Dashboard> createState() => new _DashboardState();
@@ -80,8 +78,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBarWidget(widget._fireStore, widget._storage,
-          widget._speechProvider, widget.translator),
+      appBar: AppBarWidget(
+          widget._storage, widget._speechProvider, widget.translator),
       body: new Container(
         padding: EdgeInsets.all(16.0),
         child: new Column(
@@ -193,13 +191,8 @@ class _DashboardState extends State<Dashboard> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SpectatorWidget(
-              widget._fireStore,
-              widget._storage,
-              widget._speechProvider,
-              index,
-              "en-US",
-              widget.translator),
+          builder: (context) => SpectatorWidget(widget._storage,
+              widget._speechProvider, index, "en-US", widget.translator),
         ));
   }
 
@@ -251,13 +244,8 @@ class _DashboardState extends State<Dashboard> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SpectatorWidget(
-              widget._fireStore,
-              widget._storage,
-              widget._speechProvider,
-              index,
-              language,
-              widget.translator),
+          builder: (context) => SpectatorWidget(widget._storage,
+              widget._speechProvider, index, language, widget.translator),
         ));
   }
 
@@ -266,137 +254,9 @@ class _DashboardState extends State<Dashboard> {
         context,
         MaterialPageRoute(
             builder: (context) => CreateConferencePage(
-                widget._fireStore,
                 widget._storage,
                 widget._speechProvider,
                 this.conferencesSize,
-                widget.translator)));
-  }
-}
-
-class CreateConferencePage extends StatefulWidget {
-  final FireStore _fireStore;
-  final FireStorage _storage;
-  final SpeechToTextProvider _speechProvider;
-  int conferenceSize;
-  final translator;
-
-  CreateConferencePage(this._fireStore, this._storage, this._speechProvider,
-      this.conferenceSize, this.translator);
-
-  @override
-  State<CreateConferencePage> createState() => new _CreateConferencePageState();
-}
-
-class _CreateConferencePageState extends State<CreateConferencePage> {
-  final TextEditingController _nameFilter = new TextEditingController();
-
-  String _name;
-  String _language;
-
-  _CreateConferencePageState() {
-    _nameFilter.addListener(_nameListen);
-  }
-
-  void _nameListen() {
-    if (_nameFilter.text.isEmpty) {
-      _name = "";
-    } else {
-      _name = _nameFilter.text;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildInputFields(),
-            _buildButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
-      title: new Text("Conferences"),
-      centerTitle: true,
-    );
-  }
-
-  Widget _buildInputFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _nameFilter,
-              decoration: new InputDecoration(labelText: 'Conference Name'),
-            ),
-          ),
-          _buildLanguageDropdown()
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLanguageDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 25),
-          child: Text('Language', textScaleFactor: 1.5),
-        ),
-        Padding(
-            padding: EdgeInsets.only(bottom: 25),
-            child: DropdownButton<String>(
-              onChanged: (selectedVal) => setState(() {
-                _language = selectedVal;
-              }),
-              value: _language,
-              items: widget._speechProvider.locales
-                  .map<DropdownMenuItem<String>>(
-                      (localeName) => DropdownMenuItem<String>(
-                            value: localeName.localeId,
-                            child: Text(localeName.name),
-                          ))
-                  .toList(),
-            ))
-      ],
-    );
-  }
-
-  Widget _buildButton() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new RaisedButton(
-            child: new Text('Create Conference'),
-            onPressed: _createConferencePressed,
-          )
-        ],
-      ),
-    );
-  }
-
-  void _createConferencePressed() {
-    widget._storage.addConference(
-        _name, _language, context.read<FireAuth>().currentUser.uid);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ProviderDemoApp(
-                widget._fireStore,
-                widget._storage,
-                widget._speechProvider,
-                widget.conferenceSize,
-                _language,
                 widget.translator)));
   }
 }

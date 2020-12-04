@@ -1,12 +1,11 @@
-part of 'main.dart';
+part of '../main.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final FireStore _fireStore;
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
 
-  AppBarWidget(this._fireStore, this._storage, this._speechProvider,this.translator)
+  AppBarWidget(this._storage, this._speechProvider, this.translator)
       : preferredSize = Size.fromHeight(kToolbarHeight);
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                      this._fireStore, this._storage, this._speechProvider, this.translator),
+                      this._storage, this._speechProvider, this.translator),
                 ));
           },
           child: CircleAvatar(
@@ -40,10 +39,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Size preferredSize; // default is 56.0
 }
 
-
 class Picture extends StatelessWidget {
-
-final Uint8List _imageBytes;
+  final Uint8List _imageBytes;
   Picture(this._imageBytes);
 
   @override
