@@ -1,4 +1,4 @@
-part of '../../main.dart';
+part of '../../../main.dart';
 
 class AccountPage extends StatefulWidget {
   final FireStorage _storage;
@@ -135,8 +135,14 @@ class _AccountPageState extends State<AccountPage> {
             'LOGOUT',
             textScaleFactor: 1.5,
           ),
-          onPressed: () async {
-            await scanner.scan();
+          onPressed: () {
+            context.read<FireAuth>().signOut();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoginPage(widget._storage,
+                      widget._speechProvider, widget.translator)),
+            );
           },
         ),
       ),

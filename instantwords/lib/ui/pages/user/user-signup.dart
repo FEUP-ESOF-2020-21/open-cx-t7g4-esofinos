@@ -1,4 +1,4 @@
-part of '../../main.dart';
+part of '../../../main.dart';
 
 class RegisterPage extends StatefulWidget {
   final FireStorage _storage;
@@ -172,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => Dashboard(
+              builder: (context) => MainPage(
                   widget._storage, widget._speechProvider, widget.translator)),
         );
       } else {

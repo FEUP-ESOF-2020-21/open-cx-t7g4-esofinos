@@ -1,4 +1,4 @@
-part of '../../main.dart';
+part of '../../../main.dart';
 
 class CreateConferencePage extends StatefulWidget {
   final FireStorage _storage;

@@ -20,13 +20,16 @@ import 'dart:typed_data';
 part 'core/database/firebase.dart';
 part 'core/database/fireauth.dart';
 part 'core/database/authexceptionhandler.dart';
-part 'ui/widgets/widgets.dart';
+part 'core/services/language-converter.dart';
+part 'ui/widgets/custom-header-curved-container.dart';
+part 'ui/widgets/custom-picture.dart';
+part 'ui/widgets/custom-app-bar.dart';
+part 'ui/pages/user/user-login.dart';
+part 'ui/pages/user/user-profile.dart';
+part 'ui/pages/user/user-signup.dart';
+part 'ui/pages/conference/conference-create.dart';
+part 'ui/pages/main-page.dart';
 part 'core/speechtotext/speechtotext.dart';
-part 'core/authentication/login.dart';
-part 'core/authentication/register.dart';
-part 'core/authentication/account.dart';
-part 'core/conferences/dashboard.dart';
-part 'core/conferences/createconfpage.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();

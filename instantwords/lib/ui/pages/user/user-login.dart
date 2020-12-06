@@ -1,4 +1,4 @@
-part of '../../main.dart';
+part of '../../../main.dart';
 
 class LoginPage extends StatefulWidget {
   final FireStorage _storage;
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => Dashboard(
+            builder: (context) => MainPage(
                 widget._storage, widget._speechProvider, widget.translator)),
       );
     } else {
