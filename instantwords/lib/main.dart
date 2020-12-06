@@ -17,14 +17,16 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'dart:typed_data';
 
-part 'firebase.dart';
-part 'widgets/widgets.dart';
-part 'speechtotext/speechtotext.dart';
-part 'authentication/login.dart';
-part 'authentication/register.dart';
-part 'authentication/account.dart';
-part 'conferences/dashboard.dart';
-part 'conferences/createconfpage.dart';
+part 'core/database/firebase.dart';
+part 'core/database/fireauth.dart';
+part 'core/database/authexceptionhandler.dart';
+part 'ui/widgets/widgets.dart';
+part 'core/speechtotext/speechtotext.dart';
+part 'core/authentication/login.dart';
+part 'core/authentication/register.dart';
+part 'core/authentication/account.dart';
+part 'core/conferences/dashboard.dart';
+part 'core/conferences/createconfpage.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,9 +1,9 @@
-part of '../main.dart';
+part of '../../main.dart';
 
 class CreateConferencePage extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
-  int conferenceSize;
+  final int conferenceSize;
   final translator;
 
   CreateConferencePage(this._storage, this._speechProvider, this.conferenceSize,

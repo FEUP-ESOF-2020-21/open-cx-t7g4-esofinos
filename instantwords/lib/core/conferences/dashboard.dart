@@ -1,4 +1,4 @@
-part of '../main.dart';
+part of '../../main.dart';
 
 class Dashboard extends StatefulWidget {
   final FireStorage _storage;
@@ -131,58 +131,10 @@ class _DashboardState extends State<Dashboard> {
                 },
               ),
             ),
-            //_buildConferenceBlocks(),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildConferenceBlocks() {
-    return Expanded(
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: _getConferences(),
-        ),
-      ),
-    );
-  }
-
-  Widget _getConferences() {
-    return FutureBuilder(
-        future: widget._storage
-            .getNonOwnedConferences(context.watch<FireAuth>().currentUser.uid),
-        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-          if (!snapshot.hasData) return new Container();
-          List<QueryDocumentSnapshot> content = snapshot.data;
-          var n = content.length;
-          return new ListView.builder(
-            itemCount: n,
-            itemBuilder: (BuildContext context, int index) {
-              return new RaisedButton(
-                onPressed: () => _conferencePressed(index,
-                    content[index].id.toString(), content[index]['language']),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: new ListTile(
-                        leading: Icon(Icons.analytics, size: 50),
-                        title: Text(content[index].id.toString(),
-                            textScaleFactor: 2),
-                        subtitle: Text(content[index]['language'],
-                            textScaleFactor: 1.2),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        });
   }
 
   void _scanQR() async {

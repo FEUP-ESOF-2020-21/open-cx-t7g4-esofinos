@@ -1,11 +1,10 @@
-part of '../main.dart';
+part of '../../main.dart';
 
 class AccountPage extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
   final bool needPop = false;
-  int conferences_Size;
 
   AccountPage(this._storage, this._speechProvider, this.translator);
   @override
@@ -79,7 +78,7 @@ class _AccountPageState extends State<AccountPage> {
                 textScaleFactor: 2.0,
               ),
               onPressed: () async {
-                String photoScanResult = await scanner.scan();
+                await scanner.scan();
               },
               elevation: 10.0,
             ),
@@ -120,9 +119,8 @@ class _AccountPageState extends State<AccountPage> {
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
-          widget.conferences_Size = content.length;
           return new ListView.builder(
-            itemCount: widget.conferences_Size,
+            itemCount: content.length,
             itemBuilder: (BuildContext context, int index) {
               return new RaisedButton(
                 onPressed: () => _goToConferencePressed(
@@ -155,9 +153,8 @@ class _AccountPageState extends State<AccountPage> {
         builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData) return new Container();
           List<QueryDocumentSnapshot> content = snapshot.data;
-          widget.conferences_Size = content.length;
           return new ListView.builder(
-            itemCount: widget.conferences_Size,
+            itemCount: content.length,
             itemBuilder: (BuildContext context, int index) {
               return new ElevatedButton(
                 onPressed: () {},

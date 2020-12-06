@@ -1,4 +1,4 @@
-part of '../main.dart';
+part of '../../main.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final FireStorage _storage;

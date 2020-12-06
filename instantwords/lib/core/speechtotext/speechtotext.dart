@@ -1,11 +1,11 @@
-part of '../main.dart';
+part of '../../main.dart';
 
 class ProviderDemoApp extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
-  int _documentIndex;
-  String _conferenceLanguage;
+  final int _documentIndex;
+  final String _conferenceLanguage;
 
   ProviderDemoApp(this._storage, this._speechProvider, this._documentIndex,
       this._conferenceLanguage, this.translator);
@@ -31,8 +31,8 @@ class _ProviderDemoAppState extends State<ProviderDemoApp> {
 
 class SpeechProviderExampleWidget extends StatefulWidget {
   final FireStorage _storage;
-  int _documentIndex;
-  String _conferenceLanguage;
+  final int _documentIndex;
+  final String _conferenceLanguage;
   SpeechProviderExampleWidget(
       this._storage, this._documentIndex, this._conferenceLanguage);
 
@@ -258,8 +258,8 @@ class SpectatorWidget extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
   final translator;
-  int _documentIndex;
-  String _conferenceLanguage;
+  final int _documentIndex;
+  final String _conferenceLanguage;
 
   SpectatorWidget(this._storage, this._speechProvider, this._documentIndex,
       this._conferenceLanguage, this.translator);
@@ -277,7 +277,6 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
         appBar: AppBarWidget(
             widget._storage, widget._speechProvider, widget.translator),
         body: SpectatorScreen(
-            widget._storage,
             widget._speechProvider,
             widget._documentIndex,
             widget._conferenceLanguage,
@@ -288,26 +287,21 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
 }
 
 class SpectatorScreen extends StatefulWidget {
-  final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
-  int _documentIndex;
-  String _conferenceLanguage;
+  final int _documentIndex;
+  final String _conferenceLanguage;
   final translator;
-  SpectatorScreen(this._storage, this._speechProvider, this._documentIndex,
+  SpectatorScreen(this._speechProvider, this._documentIndex,
       this._conferenceLanguage, this.translator);
 
   @override
   _SpectatorScreenState createState() => _SpectatorScreenState(
-      this._storage,
-      this._speechProvider,
       this._documentIndex,
       this._conferenceLanguage,
       this.translator);
 }
 
 class _SpectatorScreenState extends State<SpectatorScreen> {
-  final FireStorage _storage;
-  final SpeechToTextProvider _speechProvider;
   int _documentIndex;
   String _conferenceLanguage = "en_US";
   String _translationLanguage = "en_US";
@@ -315,8 +309,7 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
   final translator;
   String _translation = "";
 
-  _SpectatorScreenState(this._storage, this._speechProvider,
-      this._documentIndex, this._conferenceLanguage, this.translator);
+  _SpectatorScreenState(this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
   Widget build(BuildContext context) {
