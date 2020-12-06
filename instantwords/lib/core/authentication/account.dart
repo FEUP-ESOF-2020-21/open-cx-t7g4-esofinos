@@ -14,21 +14,25 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Center(
-          child: new Column(
-            children: <Widget>[
-              _buildUserFields(),
-              Text("Your Conferences:", textScaleFactor: 2),
-              _buildCreatedConferenceBlocks(),
-              Text("Conferences you attended:", textScaleFactor: 2),
-              _buildAttendedConferenceBlocks(),
-              _buildButton(),
-            ],
-          ),
+    return new MaterialApp(
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: _buildBar(context),
+          body: Stack(alignment: Alignment.center, children: <Widget>[
+            CustomPaint(
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height),
+                painter: HeaderCurvedContainer()),
+            TabBarView(
+              children: [
+                _buildAccount(),
+                _buildHistory(),
+                _buildYourConferences()
+              ],
+            ),
+          ]),
         ),
       ),
     );
@@ -38,14 +42,22 @@ class _AccountPageState extends State<AccountPage> {
     return new AppBar(
       title: new Text("InstantWords"),
       centerTitle: true,
+      bottom: TabBar(
+        tabs: [
+          Tab(text: "Account"),
+          Tab(text: "History"),
+          Tab(text: "Your Conferences"),
+        ],
+      ),
     );
   }
 
-  Widget _buildUserFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          CircleAvatar(
+  Widget _buildAccount() {
+    return new Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 75.0, bottom: 50.0),
+          child: CircleAvatar(
             backgroundImage: NetworkImage(context
                     .watch<FireAuth>()
                     .currentUser
@@ -53,10 +65,57 @@ class _AccountPageState extends State<AccountPage> {
                 "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
             radius: 100,
           ),
-          Text("E-mail: " + context.watch<FireAuth>().currentUser.email,
-              textScaleFactor: 1.5),
-          Text("Username: " + context.watch<FireAuth>().currentUser.displayName,
-              textScaleFactor: 1.5),
+        ),
+        _buildText(
+            "Username", context.watch<FireAuth>().currentUser.displayName),
+        _buildText("Email", context.watch<FireAuth>().currentUser.email),
+        _buildButton()
+      ],
+    );
+  }
+
+  Widget _buildHistory() {
+    return new Container(
+      padding: EdgeInsets.only(top: 30, right: 15, left: 15),
+      child: new Center(
+        child: new Column(
+          children: <Widget>[
+            Text("Conferences you attended",
+                textScaleFactor: 2,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            _buildAttendedConferenceBlocks(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildYourConferences() {
+    return new Container(
+      padding: EdgeInsets.only(top: 30, right: 15, left: 15),
+      child: new Center(
+        child: new Column(
+          children: <Widget>[
+            Text("Your Conferences",
+                textScaleFactor: 2,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            _buildCreatedConferenceBlocks(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildText(String title, String info) {
+    return new Container(
+      padding: EdgeInsets.only(bottom: 50.0),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: <Widget>[
+          Text(title,
+              textScaleFactor: 2,
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(info, textScaleFactor: 1.7),
         ],
       ),
     );
@@ -64,26 +123,22 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget _buildButton() {
     return new Container(
-      child: new Column(
-        children: <Widget>[
-          new SizedBox(
-            width: 300.0,
-            height: 50.0,
-            child: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0))),
-              heroTag: "btn1",
-              label: Text(
-                'LOGOUT',
-                textScaleFactor: 2.0,
-              ),
-              onPressed: () async {
-                await scanner.scan();
-              },
-              elevation: 10.0,
-            ),
+      padding: EdgeInsets.all(20.0),
+      child: new SizedBox(
+        width: 200.0,
+        height: 50.0,
+        child: FloatingActionButton.extended(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          heroTag: "btn1",
+          label: Text(
+            'LOGOUT',
+            textScaleFactor: 1.5,
           ),
-        ],
+          onPressed: () async {
+            await scanner.scan();
+          },
+        ),
       ),
     );
   }
@@ -134,7 +189,9 @@ class _AccountPageState extends State<AccountPage> {
                         leading: Icon(Icons.analytics, size: 50),
                         title: Text(content[index].id.toString(),
                             textScaleFactor: 2),
-                        subtitle: Text(content[index]['language'],
+                        subtitle: Text(
+                            LanguageConverter.convertLanguage(
+                                content[index]['language']),
                             textScaleFactor: 1.2),
                       ),
                     ),
@@ -156,7 +213,7 @@ class _AccountPageState extends State<AccountPage> {
           return new ListView.builder(
             itemCount: content.length,
             itemBuilder: (BuildContext context, int index) {
-              return new ElevatedButton(
+              return new RaisedButton(
                 onPressed: () {},
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -167,7 +224,9 @@ class _AccountPageState extends State<AccountPage> {
                         leading: Icon(Icons.analytics, size: 50),
                         title: Text(content[index].id.toString(),
                             textScaleFactor: 2),
-                        subtitle: Text(content[index]['language'],
+                        subtitle: Text(
+                            LanguageConverter.convertLanguage(
+                                content[index]['language']),
                             textScaleFactor: 1.2),
                       ),
                     ),

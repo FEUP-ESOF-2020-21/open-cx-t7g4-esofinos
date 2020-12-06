@@ -121,7 +121,9 @@ class _DashboardState extends State<Dashboard> {
                             leading: Icon(Icons.analytics, size: 50),
                             title: Text(_resultsList[index].id.toString(),
                                 textScaleFactor: 2),
-                            subtitle: Text(_resultsList[index]['language'],
+                            subtitle: Text(
+                                LanguageConverter.convertLanguage(
+                                    _resultsList[index]['language']),
                                 textScaleFactor: 1.2),
                           ),
                         ),
