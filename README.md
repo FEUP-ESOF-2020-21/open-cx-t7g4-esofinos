@@ -412,9 +412,13 @@ It can be beneficial to present the system both in a horizontal or vertical deco
 * horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
 * vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
 
-**Text to be added**
+To structure our app we used a package diagram:
+ * Search package contains the components to create or join a conference and depends on our conference package and an external package (QRCode);
+ * Conference package contains the components to get a transcript, choose a language and speak. It also depends on two external packages (SpeechToText and Translation).
+ * Account Package contains the components to get a user's conference record and created conferences;
+ * Authentication package contains the components to login, register and logout a user;
 
-![Logical Architecture](https://i.imgur.com/JtcFxJU.png)
+![Logical Architecture](https://i.imgur.com/Ig0HFMJ.png)
 
 ### Physical architecture
 The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
