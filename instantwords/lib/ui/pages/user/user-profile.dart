@@ -15,26 +15,26 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: _buildBar(context),
-            body: Stack(alignment: Alignment.center, children: <Widget>[
-              CustomPaint(
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height),
-                  painter: HeaderCurvedContainer()),
-              TabBarView(
-                children: [
-                  _buildAccount(),
-                  _buildHistory(),
-                  _buildYourConferences()
-                ],
-              ),
-            ]),
-          ),
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: _buildBar(context),
+          body: Stack(alignment: Alignment.center, children: <Widget>[
+            CustomPaint(
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height),
+                painter: HeaderCurvedContainer()),
+            TabBarView(
+              children: [
+                _buildAccount(),
+                _buildHistory(),
+                _buildYourConferences()
+              ],
+            ),
+          ]),
         ),
+      ),
     );
   }
 
@@ -46,7 +46,7 @@ class _AccountPageState extends State<AccountPage> {
         tabs: [
           Tab(text: "Account"),
           Tab(text: "History"),
-          Tab(text: "Your Conferences"),
+          Tab(text: "Conferences"),
         ],
       ),
     );

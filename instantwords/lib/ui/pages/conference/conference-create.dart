@@ -3,11 +3,9 @@ part of '../../../main.dart';
 class CreateConferencePage extends StatefulWidget {
   final FireStorage _storage;
   final SpeechToTextProvider _speechProvider;
-  final int conferenceSize;
   final translator;
 
-  CreateConferencePage(this._storage, this._speechProvider, this.conferenceSize,
-      this.translator);
+  CreateConferencePage(this._storage, this._speechProvider, this.translator);
 
   @override
   State<CreateConferencePage> createState() => new _CreateConferencePageState();
@@ -119,13 +117,14 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
     } else {
       widget._storage.addConference(
           _name, _language, context.read<FireAuth>().currentUser.uid);
+      int confIndex = await widget._storage.getConferenceByID(_name);
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => ProviderDemoApp(
                   widget._storage,
                   widget._speechProvider,
-                  widget.conferenceSize,
+                  confIndex,
                   _language,
                   widget.translator)));
     }

@@ -49,6 +49,8 @@ class _SpeechProviderExampleWidgetState
   String _conferenceLanguage;
   bool _stopListen = false;
 
+  var subscription;
+
   _SpeechProviderExampleWidgetState(
       this._storage, this._documentIndex, this._conferenceLanguage);
 
@@ -156,7 +158,7 @@ class _SpeechProviderExampleWidgetState
                       .collection('conferences')
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (speechProvider.hasResults) {
+                    if (speechProvider.hasResults && snapshot.hasData) {
                       _storage.updateConference(
                           snapshot
                               .data.documents[this._documentIndex].documentID,
@@ -218,21 +220,20 @@ class _SpeechProviderExampleWidgetState
 
   _listen(speechProvider, document) {
     if (_stopListen) return;
-    _stopListen = false;
     speechProvider.listen(partialResults: true, localeId: _conferenceLanguage);
-    speechProvider.stream.listen((recognitionEvent) async {
+    subscription = speechProvider.stream.listen((recognitionEvent) async {
       switch (recognitionEvent.eventType) {
         case SpeechRecognitionEventType.finalRecognitionEvent:
+          print("Final Recognition");
           _storage.updateConference(
               document, {'text': speechProvider.lastResult.recognizedWords});
-          speechProvider.listen(
-              partialResults: true, localeId: _conferenceLanguage);
+          subscription.cancel();
+          _listen(speechProvider, document);
           break;
         case SpeechRecognitionEventType.errorEvent:
-          _storage.updateConference(
-              document, {'text': speechProvider.lastResult.recognizedWords});
-          speechProvider.listen(
-              partialResults: true, localeId: _conferenceLanguage);
+          print("error in Recognition");
+          subscription.cancel();
+          _listen(speechProvider, document);
           break;
         default:
           break;
@@ -241,15 +242,15 @@ class _SpeechProviderExampleWidgetState
   }
 
   _startListen() {
-    setState(() {
-      _stopListen = false;
-    });
+    _stopListen = false;
   }
 
   _stop(speechProvider) {
     setState(() {
       _stopListen = true;
-      speechProvider.stop();
+      speechProvider.listen(
+          partialResults: true, localeId: _conferenceLanguage);
+      speechProvider.cancel();
     });
   }
 }
@@ -276,11 +277,8 @@ class _SpectatorWidgetState extends State<SpectatorWidget> {
       child: Scaffold(
         appBar: AppBarWidget(
             widget._storage, widget._speechProvider, widget.translator),
-        body: SpectatorScreen(
-            widget._speechProvider,
-            widget._documentIndex,
-            widget._conferenceLanguage,
-            widget.translator),
+        body: SpectatorScreen(widget._speechProvider, widget._documentIndex,
+            widget._conferenceLanguage, widget.translator),
       ),
     );
   }
@@ -296,9 +294,7 @@ class SpectatorScreen extends StatefulWidget {
 
   @override
   _SpectatorScreenState createState() => _SpectatorScreenState(
-      this._documentIndex,
-      this._conferenceLanguage,
-      this.translator);
+      this._documentIndex, this._conferenceLanguage, this.translator);
 }
 
 class _SpectatorScreenState extends State<SpectatorScreen> {
@@ -309,7 +305,8 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
   final translator;
   String _translation = "";
 
-  _SpectatorScreenState(this._documentIndex, this._conferenceLanguage, this.translator);
+  _SpectatorScreenState(
+      this._documentIndex, this._conferenceLanguage, this.translator);
 
   @override
   Widget build(BuildContext context) {
