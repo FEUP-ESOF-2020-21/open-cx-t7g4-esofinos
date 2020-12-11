@@ -54,45 +54,71 @@ Conferences are great way of sharing knowledge, sadly not everyone can enjoy the
 
 ### Use case diagram 
 
-![Use Case Diagram](https://i.imgur.com/7fNntzi.png)
+![Use Case Diagram](https://i.imgur.com/64q1OHj.png)
 
 
 #### Register/Login
 
-* **Actor**. User.
-* **Description**. The User can register in the app and select prefered language.
-* **Preconditions and Postconditions**. The user must select which conference he is attending to select its role as a speaker or an attendee.
+* **Actor**: User.
+* **Description**: The User can register in the app.
+* **Preconditions and Postconditions**: For Register, there are none. For Login, must have a previously registered account.
 
-* **Normal Flow**. 
+* **Normal Flow**: 
     i. The user registers in the app by choosing a username, email and a password.
-    ii. The user fills the prefered language settings.
     
-* **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
+* **Alternative Flows and Exceptions**: When registering, if the password is considered weak (has less than 8 characters), a pop-up message will alert the user of this event and block him from creating an account with those credentials. When logging in, if the user tries to login with invalid credentials, wether it be the username or the password, a pop up message, similar to that described above, is displayed alerting of this event.
 
-#### Start conference/talk
+#### View List of Conferences
 
-* **Actor**. Speaker.
-* **Description**. The speaker creates a new talk and livestreams his voice.
-* **Preconditions and Postconditions**. The speaker must select the conference before he creates a new talk. In the end, there will be a new talk the attendees can select and get the transcript of.
+* **Actor**: User.
+* **Description**: The User can view the list of conferences.
+* **Preconditions and Postconditions**: The User must be registered within the app.
 
-* **Normal Flow**. 
-    i. The speaker selects which conference he is participating in.
-    ii. The speaker creates a new talk in the app.
-    iii. The speaker selects which language he will be talking in.
-    iv. The speaker starts livestreaming his voice as the session begins.
-* **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
-
-#### Get transcripts
-
-* **Actor**. Attendee.
-* **Description**. The attendee reads the transcripts from the talk he is watching in the app.
-* **Preconditions and Postconditions**. 
-
-* **Normal Flow**. 
-    i. The attendee selects the conference he is attending and the talk he is going to watch.
-    ii. The attendee reads the transcript from his phone as the speaker is talking.
+* **Normal Flow**:
+    i. The User, after logging in/registering enters the dashboard and can view a list of conferences.
     
-* **Alternative Flows and Exceptions**. Document other, legitimate usage scenarios that can take place within this use case, stating any differences in the sequence of steps that take place. In addition, describe any anticipated error conditions that could occur during execution of the use case, and define how the system is to respond to those conditions. 
+* **Alternative Flows and Exceptions**: 
+    ia.The User can go to his profile, by clicking his profile picture, and can view his attended and created conferences.
+    ib. The User can use the search bar, in the dashboard, to filter the list of conferences.
+
+#### Add Conference
+
+* **Actor**: Speaker.
+* **Description**: The Speaker can add a conference, by choosing his speech language.
+* **Preconditions and Postconditions**: The User must be registered within the app.
+
+* **Normal Flow**:
+    i. The Speaker, after logging in/registering enters the dashboard and has an option to add a conference.
+    ii. A new window will appear requesting the conference's name and speech language.
+    
+* **Alternative Flows and Exceptions**: If the Speaker tries to create a conference with a name that already exists or with no language, a pop up message will appear, alerting the user to this event and blocking him from doing so.
+
+
+#### Get a transcript of my speech
+
+* **Actor**: Speaker.
+* **Description**: The Speaker can view the transcript of his speech.
+* **Preconditions and Postconditions**: The Speaker must be registered within the app and have created a conference.
+
+* **Normal Flow**:
+    i. The Speaker, after creating a conference goes to a new window where he can speak, by clicking in the microphone button.
+    ii. After speaking a few words, the Speaker can see the transcript of his speech in the screen.
+    
+* **Alternative Flows and Exceptions**: 
+   ia. The Speaker, when in his profile page, can click on one of his created conferences, sending him to the conference window described above.
+
+#### Get a transcript of the speech in my language
+
+* **Actor**: Spectator.
+* **Description**: The Spectator can view the transcript of a speech, in a language of his choosing.
+* **Preconditions and Postconditions**: The Spectator must be registered within the app and must have chosen a conference to attend.
+
+* **Normal Flow**:
+    i. The Spectator, after selecting a conference to attend in his dashboard, goes to a new window where he can choose the language of the transcript, from a dropdown list.
+    ii. After choosing a language, the Spectator can see the transcript of the speech in the screen, translated in that language.
+    
+* **Alternative Flows and Exceptions**:
+   ia. The Spectator, when in his profile page, can click on one of his attended conferences, sending him to the conference window described above.
 
 ### User stories
 
@@ -363,7 +389,7 @@ At the end, it is good to add a rough indication of the value of the user story 
 
 ### Domain model
 
-![Domain UML](https://cdn.discordapp.com/attachments/757917778232737823/781829656608636928/problem.png)
+![Domain UML](https://i.imgur.com/gNxnD3D.png)
 
 **Description**: All users have one single profile. A user can be a *Speaker* or an *Attendee* depending on the situation.
 A conference can be attended by several *Attendees* and can only have **one** *Speaker*.
