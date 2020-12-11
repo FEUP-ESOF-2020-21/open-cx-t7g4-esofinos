@@ -1,4 +1,4 @@
-name: InstantWords
+name: instantwords
 description: Enabling everyone, specially people with hearing disabilities, to experience conferences to the fullest by using speech-to-text to create real time subtitles during talks!
 
 # The following line prevents the package from being accidentally published to
@@ -50,6 +50,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
 
   flutter_launcher_icons: ^0.8.0
 

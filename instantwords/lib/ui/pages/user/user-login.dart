@@ -77,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _emailFilter,
               keyboardType: TextInputType.emailAddress,
               decoration: new InputDecoration(labelText: 'Email'),
+			  key: Key('email')
             ),
           ),
           new Container(
@@ -84,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordFilter,
               keyboardType: TextInputType.visiblePassword,
               decoration: new InputDecoration(labelText: 'Password'),
+			  key: Key('password'),
               obscureText: true,
             ),
           )
@@ -99,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
           new RaisedButton(
             child: new Text('Login'),
             onPressed: _loginPressed,
+			key: Key('login_button')
           ),
           new FlatButton(
             child: new Text('Dont have an account? Tap here to register.'),
@@ -154,6 +157,16 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(color: Colors.black),
             ),
             content: Text(errorMsg),
+			actions: <Widget>[
+          TextButton(
+            child: Text('Approve'),
+			key: Key('approve_failed'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ]
+
           );
         });
   }
