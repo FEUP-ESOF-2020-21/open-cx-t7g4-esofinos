@@ -110,17 +110,38 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
     );
   }
 
-  void _createConferencePressed() {
-    widget._storage.addConference(
-        _name, _language, context.read<FireAuth>().currentUser.uid);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ProviderDemoApp(
-                widget._storage,
-                widget._speechProvider,
-                widget.conferenceSize,
-                _language,
-                widget.translator)));
+  void _createConferencePressed() async {
+    var exists = await widget._storage.getConferenceByID(_name);
+    if (exists != -1) {
+      _showAlertDialog("This conference already exists");
+    } else if (_language == null) {
+      _showAlertDialog("Please specify language");
+    } else {
+      widget._storage.addConference(
+          _name, _language, context.read<FireAuth>().currentUser.uid);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProviderDemoApp(
+                  widget._storage,
+                  widget._speechProvider,
+                  widget.conferenceSize,
+                  _language,
+                  widget.translator)));
+    }
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Failed to create',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
   }
 }
