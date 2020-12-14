@@ -130,6 +130,7 @@ class _MainPageState extends State<MainPage> {
       ],
     );
   }
+
   void _conferencePressed(String name, String language) async {
     widget._storage.addVisitor(name, context.read<FireAuth>().currentUser.uid);
     int confIndex = await widget._storage.getConferenceByID(name);

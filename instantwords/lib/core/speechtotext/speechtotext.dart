@@ -88,53 +88,59 @@ class _SpeechProviderExampleWidgetState
   }
 
   Widget _buildButtons(speechProvider) {
-    return Padding(padding: EdgeInsets.all(10),child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('conferences').snapshots(),
-          builder: (context, snapshot) {
-            return FloatingActionButton(
-              heroTag: "btn2",
-              child: Icon(
-                  !speechProvider.isAvailable || speechProvider.isListening
-                      ? Icons.mic
-                      : Icons.mic_none),
-              onPressed: () => {
-                _startListen(),
-                _listen(speechProvider,
-                    snapshot.data.documents[this._documentIndex].documentID)
-              },
-            );
-          },
-        ),
-        StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('conferences').snapshots(),
-          builder: (context, snapshot) {
-            return FloatingActionButton(
-              heroTag: "btn3",
-              child: Text('Stop'),
-              onPressed: () => _stop(
-                speechProvider,
-              ),
-            );
-          },
-        ),
-        StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('conferences').snapshots(),
-          builder: (context, snapshot) {
-            return FloatingActionButton(
-              heroTag: "btn4",
-              child: Text('QR'),
-              onPressed: () => qrGen(),
-            );
-          },
-        ),
-      ],
-    ),);
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('conferences')
+                .snapshots(),
+            builder: (context, snapshot) {
+              return FloatingActionButton(
+                heroTag: "btn2",
+                child: Icon(
+                    !speechProvider.isAvailable || speechProvider.isListening
+                        ? Icons.mic
+                        : Icons.mic_none),
+                onPressed: () => {
+                  _startListen(),
+                  _listen(speechProvider,
+                      snapshot.data.documents[this._documentIndex].documentID)
+                },
+              );
+            },
+          ),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('conferences')
+                .snapshots(),
+            builder: (context, snapshot) {
+              return FloatingActionButton(
+                heroTag: "btn3",
+                child: Text('Stop'),
+                onPressed: () => _stop(
+                  speechProvider,
+                ),
+              );
+            },
+          ),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('conferences')
+                .snapshots(),
+            builder: (context, snapshot) {
+              return FloatingActionButton(
+                heroTag: "btn4",
+                child: Text('QR'),
+                onPressed: () => qrGen(),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildRecognizedWords(speechProvider) {
@@ -149,35 +155,40 @@ class _SpeechProviderExampleWidgetState
             ),
           ),
           Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(25),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('conferences')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (speechProvider.hasResults && snapshot.hasData) {
-                      _storage.updateConference(
-                          snapshot
-                              .data.documents[this._documentIndex].documentID,
-                          {'text': speechProvider.lastResult.recognizedWords});
-                    }
+            child: Padding(
+              padding: EdgeInsets.all(25),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Container(
+                  color: Theme.of(context).selectedRowColor,
+                  child: Center(
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('conferences')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (speechProvider.hasResults && snapshot.hasData) {
+                          _storage.updateConference(
+                              snapshot.data.documents[this._documentIndex]
+                                  .documentID,
+                              {
+                                'text':
+                                    speechProvider.lastResult.recognizedWords
+                              });
+                        }
 
-                    if (!snapshot.hasData)
-                      return Text('Loading data... Please wait...');
-                    return Text(
-                        snapshot.data.documents[this._documentIndex]['text'], textScaleFactor: 1.5,);
-                  },
+                        if (!snapshot.hasData)
+                          return Text('Loading data... Please wait...');
+                        return Text(
+                          snapshot.data.documents[this._documentIndex]['text'],
+                          textScaleFactor: 1.5,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
-            ),
-          ),
           ),
         ],
       ),
@@ -335,41 +346,43 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
       flex: 4,
       child: Column(
         children: <Widget>[
-          
           Expanded(
-            child : Padding(
-              padding: EdgeInsets.symmetric(vertical: 20,horizontal: 25),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
               child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('conferences')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Text('Loading data... Please wait...');
-                    }
-                    _toBeTranslated =
-                        snapshot.data.documents[this._documentIndex]['text'];
-                    _conferenceLanguage = snapshot
-                        .data.documents[this._documentIndex]['language'];
-                    return FutureBuilder(
-                        future: getTranslation(_toBeTranslated),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> asyncSnapshot) {
-                          if (!asyncSnapshot.hasData) {
-                            return Text("Loading...");
-                          }
-                          return Text(_translation, textScaleFactor: 1.5,);
-                        });
-                  },
+                scrollDirection: Axis.vertical,
+                child: Container(
+                  color: Theme.of(context).selectedRowColor,
+                  child: Center(
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('conferences')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text('Loading data... Please wait...');
+                        }
+                        _toBeTranslated = snapshot
+                            .data.documents[this._documentIndex]['text'];
+                        _conferenceLanguage = snapshot
+                            .data.documents[this._documentIndex]['language'];
+                        return FutureBuilder(
+                            future: getTranslation(_toBeTranslated),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> asyncSnapshot) {
+                              if (!asyncSnapshot.hasData) {
+                                return Text("Loading...");
+                              }
+                              return Text(
+                                _translation,
+                                textScaleFactor: 1.5,
+                              );
+                            });
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
-            ),
             ),
           ),
         ],

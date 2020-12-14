@@ -59,13 +59,10 @@ class _AccountPageState extends State<AccountPage> {
         Container(
           padding: EdgeInsets.only(top: 75.0, bottom: 50.0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(context
-                    .watch<FireAuth>()
-                    .currentUser
-                    .photoURL ??
-                "https://eu.ui-avatars.com/api/?name="+context
-                    .watch<FireAuth>()
-                    .currentUser.displayName),
+            backgroundImage: NetworkImage(
+                context.watch<FireAuth>().currentUser.photoURL ??
+                    "https://eu.ui-avatars.com/api/?name=" +
+                        context.watch<FireAuth>().currentUser.displayName),
             radius: 100,
           ),
         ),
@@ -141,12 +138,11 @@ class _AccountPageState extends State<AccountPage> {
           onPressed: () {
             context.read<FireAuth>().signOut();
             Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LoginPage(widget._storage,
-                      widget._speechProvider, widget.translator)),
-              (route)=>false
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(widget._storage,
+                        widget._speechProvider, widget.translator)),
+                (route) => false);
           },
         ),
       ),
@@ -197,9 +193,12 @@ class _AccountPageState extends State<AccountPage> {
                       padding: EdgeInsets.all(10),
                       child: new ListTile(
                         leading: Icon(Icons.analytics, size: 50),
-                        title: AutoSizeText(content[index].id.toString(),
+                        title: AutoSizeText(
+                          content[index].id.toString(),
                           style: TextStyle(fontSize: 40),
-                          maxFontSize: 80, maxLines: 1, ),
+                          maxFontSize: 80,
+                          maxLines: 1,
+                        ),
                         subtitle: Text(
                             LanguageConverter.convertLanguage(
                                 content[index]['language']),
