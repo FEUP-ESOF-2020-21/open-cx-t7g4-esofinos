@@ -68,7 +68,6 @@ class _SpeechProviderExampleWidgetState
     return Column(children: [
       _buildControlBar(speechProvider),
       _buildRecognizedWords(speechProvider),
-      _buildErrorStatus(speechProvider),
       _buildListeningStatus(speechProvider)
     ]);
   }
@@ -89,7 +88,7 @@ class _SpeechProviderExampleWidgetState
   }
 
   Widget _buildButtons(speechProvider) {
-    return Row(
+    return Padding(padding: EdgeInsets.all(10),child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         StreamBuilder(
@@ -135,12 +134,12 @@ class _SpeechProviderExampleWidgetState
           },
         ),
       ],
-    );
+    ),);
   }
 
   Widget _buildRecognizedWords(speechProvider) {
     return Expanded(
-      flex: 4,
+      flex: 1,
       child: Column(
         children: <Widget>[
           Center(
@@ -150,7 +149,11 @@ class _SpeechProviderExampleWidgetState
             ),
           ),
           Expanded(
-            child: Container(
+          child: Padding(
+            padding: EdgeInsets.all(25),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
               color: Theme.of(context).selectedRowColor,
               child: Center(
                 child: StreamBuilder(
@@ -168,32 +171,13 @@ class _SpeechProviderExampleWidgetState
                     if (!snapshot.hasData)
                       return Text('Loading data... Please wait...');
                     return Text(
-                        snapshot.data.documents[this._documentIndex]['text']);
+                        snapshot.data.documents[this._documentIndex]['text'], textScaleFactor: 1.5,);
                   },
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorStatus(speechProvider) {
-    return Expanded(
-      flex: 1,
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: Text(
-              'Error Status',
-              style: TextStyle(fontSize: 22.0),
             ),
           ),
-          Center(
-            child: speechProvider.hasError
-                ? Text(speechProvider.lastError.errorMsg)
-                : Container(),
           ),
         ],
       ),
@@ -351,14 +335,13 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
       flex: 4,
       child: Column(
         children: <Widget>[
-          Center(
-            child: Text(
-              'Recognized Words',
-              style: TextStyle(fontSize: 22.0),
-            ),
-          ),
+          
           Expanded(
-            child: Container(
+            child : Padding(
+              padding: EdgeInsets.symmetric(vertical: 20,horizontal: 25),
+              child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
               color: Theme.of(context).selectedRowColor,
               child: Center(
                 child: StreamBuilder(
@@ -380,11 +363,13 @@ class _SpectatorScreenState extends State<SpectatorScreen> {
                           if (!asyncSnapshot.hasData) {
                             return Text("Loading...");
                           }
-                          return Text(_translation);
+                          return Text(_translation, textScaleFactor: 1.5,);
                         });
                   },
                 ),
               ),
+            ),
+            ),
             ),
           ),
         ],

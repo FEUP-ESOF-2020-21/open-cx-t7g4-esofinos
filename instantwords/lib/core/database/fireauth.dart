@@ -18,6 +18,7 @@ class FireAuth {
           email: email, password: password);
       if (authResult.user != null) {
         status = AuthResultStatus.successful;
+        await authResult.user.updateProfile(displayName: displayName, photoURL: photoURL);
       } else {
         status = AuthResultStatus.undefined;
       }

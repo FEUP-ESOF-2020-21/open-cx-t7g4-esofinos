@@ -112,6 +112,8 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
     var exists = await widget._storage.getConferenceByID(_name);
     if (exists != -1) {
       _showAlertDialog("This conference already exists");
+    } else if (_name == null) {
+      _showAlertDialog("Please specify conference name");
     } else if (_language == null) {
       _showAlertDialog("Please specify language");
     } else {

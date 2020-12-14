@@ -9,6 +9,7 @@ class Picture extends StatelessWidget {
     var title = 'QR Code';
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: title,
       home: Scaffold(
         appBar: AppBar(

@@ -83,8 +83,8 @@ class _MainPageState extends State<MainPage> {
       showResults = _allResults;
     }
     setState(() {
-      updateSceenWidget(1);
       _resultsList = showResults;
+      updateSceenWidget(1);
     });
   }
 
@@ -130,15 +130,14 @@ class _MainPageState extends State<MainPage> {
       ],
     );
   }
-
-  void _conferencePressed(int index, String name, String language) {
+  void _conferencePressed(String name, String language) async {
     widget._storage.addVisitor(name, context.read<FireAuth>().currentUser.uid);
-
+    int confIndex = await widget._storage.getConferenceByID(name);
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => SpectatorWidget(widget._storage,
-              widget._speechProvider, index, language, widget.translator),
+              widget._speechProvider, confIndex, language, widget.translator),
         ));
   }
 
@@ -158,7 +157,6 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (BuildContext context, int index) {
                 return new RaisedButton(
                   onPressed: () => _conferencePressed(
-                      index,
                       _allResults[index].id.toString(),
                       _allResults[index]['language']),
                   child: Column(
@@ -213,7 +211,6 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (BuildContext context, int index) {
                 return new RaisedButton(
                   onPressed: () => _conferencePressed(
-                      index,
                       _resultsList[index].id.toString(),
                       _resultsList[index]['language']),
                   child: Column(
