@@ -48,5 +48,27 @@ void main() {
 		await driver.waitFor(find.text('Conferences'));
     });
 
+
+    test('search screen', () async {
+		await driver.waitFor(find.byValueKey('bottom_bar'));
+		await driver.tap(find.text('Search'));
+		await driver.waitFor(find.text('Search For Conferences'));
+    });
+
+    test('dashbaord', () async {
+		await driver.waitFor(find.byValueKey('bottom_bar'));
+		await driver.tap(find.text('Dashboard'));
+		await driver.waitFor(find.text('Conferences'));
+    });
+
+    test('create conference', () async {
+		await driver.waitFor(find.byValueKey('bottom_bar'));
+		await driver.tap(find.text('Create'));
+		await driver.waitFor(find.text('Language'));
+    });
+
+
+
+
   });
 }

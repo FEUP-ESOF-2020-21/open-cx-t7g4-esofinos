@@ -107,6 +107,7 @@ class _MainPageState extends State<MainPage> {
       unselectedItemColor: Colors.white.withOpacity(.60),
       selectedFontSize: 14,
       unselectedFontSize: 14,
+	  key: Key('bottom_bar'),
       onTap: (value) {
         setState(() => {updateSceenWidget(value)});
       },
