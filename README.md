@@ -45,9 +45,7 @@ Enabling everyone, specially people with hearing disabilities, to experience con
 ---
 ## Elevator Pitch
 
-Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. InstantWords, using Speech-To-Text technology, provides transcripts, directly to your phone, in a wide array of languages enabling a brand new audience to enjoy them.
-
-
+Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. With a very simple and user-friendly UI, InstantWords makes use of Speech-To-Text technology, providing transcripts directly to your phone, in a wide array of languages, and enabling a brand new audience to enjoy their favourite conferences.
 
 ---
 ## Requirements
@@ -362,31 +360,6 @@ Then I should be prompted an error.
 **Value:** Must have
 **Effort:** S
 
-
-
-
-This section will contain the requirements of the product described as **user stories**, organized in a global **[user story map](https://plan.io/blog/user-story-mapping/)** with **user roles** or **themes**.
-
-For each theme, or role, you may add a small description. User stories should be detailed in the tool you decided to use for project management (e.g. trello or github projects).
-
-A user story is a description of desired functionality told from the perspective of the user or customer. A starting template for the description of a user story is 
-
-*As a < user role >, I want < goal > so that < reason >.*
-
-**INVEST in good user stories**. 
-You may add more details after, but the shorter and complete, the better. In order to decide if the user story is good, please follow the [INVEST guidelines](https://xp123.com/articles/invest-in-good-stories-and-smart-tasks/).
-
-**User interface mockups**.
-After the user story text, you should add a draft of the corresponding user interfaces, a simple mockup or draft, if applicable.
-
-**Acceptance tests**.
-For each user story you should write also the acceptance tests (textually in Gherkin), i.e., a description of scenarios (situations) that will help to confirm that the system satisfies the requirements addressed by the user story.
-
-**Value and effort**.
-
-
-At the end, it is good to add a rough indication of the value of the user story to the customers (e.g. [MoSCoW](https://en.wikipedia.org/wiki/MoSCoW_method) method) and the team should add an estimation of the effort to implement it, for example, using t-shirt sizes (XS, S, M, L, XL).
-
 ### Domain model
 
 ![Domain UML](https://i.imgur.com/gNxnD3D.png)
@@ -397,20 +370,6 @@ A conference can be attended by several *Attendees* and can only have **one** *S
 ---
 
 ## Architecture and Design
-The architecture of a software system encompasses the set of key decisions about its overall organization. 
-
-A well written architecture document is brief but reduces the amount of time it takes new programmers to a project to understand the code to feel able to make modifications and enhancements.
-
-To document the architecture requires describing the decomposition of the system in their parts (high-level components) and the key behaviors and collaborations between them. 
-
-In this section you should start by briefly describing the overall components of the project and their interrelations. You should also describe how you solved typical problems you may have encountered, pointing to well-known architectural and design patterns, if applicable.
-
-### Logical architecture
-The purpose of this subsection is to document the high-level logical structure of the code, using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
-
-It can be beneficial to present the system both in a horizontal or vertical decomposition:
-* horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts; 
-* vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
 
 To structure our app we used a package diagram:
  * Search package contains the components to create or join a conference and depends on our conference package and an external package (QRCode);
@@ -421,65 +380,43 @@ To structure our app we used a package diagram:
 ![Logical Architecture](https://i.imgur.com/Ig0HFMJ.png)
 
 ### Physical architecture
-The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
-
-It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
 
 For our application, we will be using Flutter, for the framework, and Firebase, for the database. We are also using some API's for our [Speech to Text](https://pub.dev/packages/speech_to_text), [Translation](https://pub.dev/packages/translator)  and [QR Code generation](https://pub.dev/packages/qrscan) functionalities.
 
 ![Physical architecture](https://i.imgur.com/CWGckYj.png)
 
-
-
-### Prototype
-To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
-
-In this subsection please describe in more detail which, and how, user(s) story(ies) were implemented.
-
----
-
-## Implementation
-Regular product increments are a good practice of product management. 
-
-While not necessary, sometimes it might be useful to explain a few aspects of the code that have the greatest potential to confuse software engineers about how it works. Since the code should speak by itself, try to keep this section as short and simple as possible.
-
-Use cross-links to the code repository and only embed real fragments of code when strictly needed, since they tend to become outdated very soon.
-
----
 ## Test
 
-There are several ways of documenting testing activities, and quality assurance in general, being the most common: a strategy, a plan, test case specifications, and test checklists.
+### Test plan
 
-In this section it is only expected to include the following:
-* test plan describing the list of features to be tested and the testing methods and tools;
-* test case specifications to verify the functionalities, using unit tests and acceptance tests.
+To test our apllication we implemented Acceptance and Unit tests.
+Acceptance Tests are used to verify the expected output through statements that describe all of the actions the user must take to permform a task, and the result of those actions.
+Unit Tests are used to verify the expected output after the user interacts with the application.
+
+Since our app heavily depends on FireBase, Speech-To-Text and Translation, Unit Testing was difficult to implement and we came to the conclusion that we could only test our main page and our login.
+
+### Test cases specifications automated
+
+Implemented acceptance tests:
+
+- Correct Start Screen: 
+ - We check if the app starts of in our login page, with all inputs empty;
  
-A good practice is to simplify this, avoiding repetitions, and automating the testing actions as much as possible.
+- Invalid Login:
+ - We simulate a press in the login button, without any information inputed in the apropriate e-mail and password fields;
+ - Then, we check if the app displays a message of 'Login failed';
+ 
+- Valid Login:
+ - We simulate the input of valid credentials into the apropriate e-mail and password fields;
+ - The, we simulate a press in the login button;
+ - Finally, we verify if the login was successful by searching for a specific text, located in the dasboard screen;
 
----
-## Configuration and change management
+Implemented Unit Tests:
 
-Configuration and change management are key activities to control change to, and maintain the integrity of, a project’s artifacts (code, models, documents).
-
-For the purpose of ESOF, we will use a very simple approach, just to manage feature requests, bug fixes, and improvements, using GitHub issues and following the [GitHub flow](https://guides.github.com/introduction/flow/).
-
-
----
-
-## Project management
-
-Software project management is an art and science of planning and leading software projects, in which software projects are planned, implemented, monitored and controlled.
-
-In the context of ESOF, we expect that each team adopts a project management tool capable of registering tasks, assign tasks to people, add estimations to tasks, monitor tasks progress, and therefore being able to track their projects.
-
-Example of tools to do this are:
-  * [Trello.com](https://trello.com)
-  * [Github Projects](https://github.com/features/project-management/com)
-  * [Pivotal Tracker](https://www.pivotaltracker.com)
-  * [Jira](https://www.atlassian.com/software/jira)
-
-We recommend to use the simplest tool that can possibly work for the team.
-
+- Correct Start Screen:
+ - We check if the app starts of in our login page, with all inputs empty;
+- 
+-
 
 ---
 
