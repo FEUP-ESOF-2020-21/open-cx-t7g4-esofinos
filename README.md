@@ -395,31 +395,38 @@ To test our apllication we implemented Acceptance and Unit tests.
 Acceptance Tests are used to verify the expected output through statements that describe all of the actions the user must take to permform a task, and the result of those actions.
 Unit Tests are used to verify the expected output after the user interacts with the application.
 
-Since our app heavily depends on FireBase, Speech-To-Text and Translation, Unit Testing was difficult to implement and we came to the conclusion that we could only test our main page and our login.
+Unit Tests were with `flutter_test`, while Acceptance Tests were done using `flutter_drive`.
+
+Since our app heavily depends on FireBase, Speech-To-Text and Translation - which are provided by Google - Unit Testing mainly focused on the default and expected widget output.
 
 ### Test cases specifications automated
 
 Implemented acceptance tests:
-
-- Correct Start Screen: 
- - We check if the app starts of in our login page, with all inputs empty;
  
 - Invalid Login:
- - We simulate a press in the login button, without any information inputed in the apropriate e-mail and password fields;
- - Then, we check if the app displays a message of 'Login failed';
+  * We simulate a press in the login button, without any information inputed in the apropriate e-mail and password fields;
+  * Then, we check if the app displays a message of 'Login failed';
  
 - Valid Login:
- - We simulate the input of valid credentials into the apropriate e-mail and password fields;
- - The, we simulate a press in the login button;
- - Finally, we verify if the login was successful by searching for a specific text, located in the dasboard screen;
+  * We simulate the input of valid credentials into the apropriate e-mail and password fields;
+  * The, we simulate a press in the login button;
+  * Finally, we verify if the login was successful by searching for a specific text, located in the dasboard screen;
 
 Implemented Unit Tests:
 
-- Correct Start Screen:
- - We check if the app starts of in our login page, with all inputs empty;
-- 
--
-
+- Valid Start Screen:
+  * We check if the app starts of in our login page, with all inputs empty;
+- Valid Dashboard:
+  * Pressing on the "Dashboard" button it must go to the dashboard
+- Valid Search:
+  * Pressing on the "Search" button it must go to the search page
+- Valid Create Conference page:
+  * Pessing the "Create" button it must go to the "Create Conference" page
+  
+There are still some cases to be tested and improvements for the future. They are the following:
+  * Testing whether the QR code is correctly interpreted
+  * Create accounts without populating the database
+  * Decouple the need of Firebase(via mocking) to allow the existance of more Unit Tests
 ---
 
 ## Evolution - contributions to open-cx
