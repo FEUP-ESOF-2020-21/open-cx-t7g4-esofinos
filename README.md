@@ -371,6 +371,8 @@ A conference can be attended by several *Attendees* and can only have **one** *S
 
 ## Architecture and Design
 
+### Logical architecture
+
 To structure our app we used a package diagram:
  * Search package contains the components to create or join a conference and depends on our conference package and an external package (QRCode);
  * Conference package contains the components to get a transcript, choose a language and speak. It also depends on two external packages (SpeechToText and Translation).
