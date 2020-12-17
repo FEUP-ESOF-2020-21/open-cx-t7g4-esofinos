@@ -18,8 +18,6 @@ class _MainPageState extends State<MainPage> {
   List _resultsList = [];
   final _languageList = LanguageList();
 
-  int conferencesSize;
-
   int _currentIndex = 0;
   Widget screenWidget;
 
@@ -27,7 +25,6 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
-    updateConferencesSize();
     updateConferenceList();
   }
 
@@ -45,11 +42,6 @@ class _MainPageState extends State<MainPage> {
       _currentIndex = 0;
       screenWidget = _buildDashboard();
     });
-  }
-
-  updateConferencesSize() async {
-    var list = await widget._storage.getConferences();
-    this.conferencesSize = list.length;
   }
 
   updateSceenWidget(newIndex) {
@@ -91,8 +83,8 @@ class _MainPageState extends State<MainPage> {
       showResults = _allResults;
     }
     setState(() {
-      updateSceenWidget(1);
       _resultsList = showResults;
+      updateSceenWidget(1);
     });
   }
 
@@ -139,14 +131,14 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void _conferencePressed(int index, String name, String language) {
+  void _conferencePressed(String name, String language) async {
     widget._storage.addVisitor(name, context.read<FireAuth>().currentUser.uid);
-
+    int confIndex = await widget._storage.getConferenceByID(name);
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => SpectatorWidget(widget._storage,
-              widget._speechProvider, index, language, widget.translator),
+              widget._speechProvider, confIndex, language, widget.translator),
         ));
   }
 
@@ -166,7 +158,6 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (BuildContext context, int index) {
                 return new RaisedButton(
                   onPressed: () => _conferencePressed(
-                      index,
                       _allResults[index].id.toString(),
                       _allResults[index]['language']),
                   child: Column(
@@ -221,7 +212,6 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (BuildContext context, int index) {
                 return new RaisedButton(
                   onPressed: () => _conferencePressed(
-                      index,
                       _resultsList[index].id.toString(),
                       _resultsList[index]['language']),
                   child: Column(
@@ -252,6 +242,9 @@ class _MainPageState extends State<MainPage> {
 
   void _scanQR() async {
     String indexStr = await scanner.scan();
+
+    if (indexStr == null) return;
+
     int index = int.parse(indexStr);
     Navigator.push(
         context,
@@ -266,9 +259,6 @@ class _MainPageState extends State<MainPage> {
         context,
         MaterialPageRoute(
             builder: (context) => CreateConferencePage(
-                widget._storage,
-                widget._speechProvider,
-                this.conferencesSize,
-                widget.translator)));
+                widget._storage, widget._speechProvider, widget.translator)));
   }
 }

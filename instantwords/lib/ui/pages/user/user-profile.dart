@@ -15,26 +15,27 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: _buildBar(context),
-            body: Stack(alignment: Alignment.center, children: <Widget>[
-              CustomPaint(
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height),
-                  painter: HeaderCurvedContainer()),
-              TabBarView(
-                children: [
-                  _buildAccount(),
-                  _buildHistory(),
-                  _buildYourConferences()
-                ],
-              ),
-            ]),
-          ),
+      debugShowCheckedModeBanner: false,
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: _buildBar(context),
+          body: Stack(alignment: Alignment.center, children: <Widget>[
+            CustomPaint(
+                child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height),
+                painter: HeaderCurvedContainer()),
+            TabBarView(
+              children: [
+                _buildAccount(),
+                _buildHistory(),
+                _buildYourConferences()
+              ],
+            ),
+          ]),
         ),
+      ),
     );
   }
 
@@ -46,7 +47,7 @@ class _AccountPageState extends State<AccountPage> {
         tabs: [
           Tab(text: "Account"),
           Tab(text: "History"),
-          Tab(text: "Your Conferences"),
+          Tab(text: "Conferences"),
         ],
       ),
     );
@@ -58,11 +59,10 @@ class _AccountPageState extends State<AccountPage> {
         Container(
           padding: EdgeInsets.only(top: 75.0, bottom: 50.0),
           child: CircleAvatar(
-            backgroundImage: NetworkImage(context
-                    .watch<FireAuth>()
-                    .currentUser
-                    .photoURL ??
-                "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
+            backgroundImage: NetworkImage(
+                context.watch<FireAuth>().currentUser.photoURL ??
+                    "https://eu.ui-avatars.com/api/?name=" +
+                        context.watch<FireAuth>().currentUser.displayName),
             radius: 100,
           ),
         ),
@@ -137,12 +137,12 @@ class _AccountPageState extends State<AccountPage> {
           ),
           onPressed: () {
             context.read<FireAuth>().signOut();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LoginPage(widget._storage,
-                      widget._speechProvider, widget.translator)),
-            );
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage(widget._storage,
+                        widget._speechProvider, widget.translator)),
+                (route) => false);
           },
         ),
       ),
@@ -193,8 +193,12 @@ class _AccountPageState extends State<AccountPage> {
                       padding: EdgeInsets.all(10),
                       child: new ListTile(
                         leading: Icon(Icons.analytics, size: 50),
-                        title: Text(content[index].id.toString(),
-                            textScaleFactor: 2),
+                        title: AutoSizeText(
+                          content[index].id.toString(),
+                          style: TextStyle(fontSize: 40),
+                          maxFontSize: 80,
+                          maxLines: 1,
+                        ),
                         subtitle: Text(
                             LanguageConverter.convertLanguage(
                                 content[index]['language']),

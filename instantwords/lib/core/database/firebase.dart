@@ -44,7 +44,7 @@ class FireStorage {
     FirebaseFirestore.instance
         .collection('conferences')
         .doc(conferenceName)
-        .set({'language': language, 'text': "", 'owner': uid})
+        .set({'language': language, 'text': "", 'owner': uid, 'visitors': []})
         .then((value) => print("Conference Added"))
         .catchError((error) => print("Failed to add conference: $error"));
   }
@@ -108,4 +108,3 @@ class FireStorage {
     return snapshot.docs;
   }
 }
-

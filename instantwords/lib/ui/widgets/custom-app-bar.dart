@@ -21,14 +21,19 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                       this._storage, this._speechProvider, this.translator),
                 ));
           },
-          child: CircleAvatar(
+          child: Padding(padding: EdgeInsets.only(right: 10),
+          child:CircleAvatar(
             backgroundImage: NetworkImage(context
                     .watch<FireAuth>()
                     .currentUser
                     ?.photoURL ??
-                "https://www.lewesac.co.uk/wp-content/uploads/2017/12/default-avatar.jpg"),
-            radius: 50,
+                "https://eu.ui-avatars.com/api/?name="+context
+                    .watch<FireAuth>()
+                    .currentUser.displayName),
+            radius: 25,
+            
           ),
+        ),
         ),
       ],
       elevation: 50.0,
