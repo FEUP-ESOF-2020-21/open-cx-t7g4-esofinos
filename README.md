@@ -45,7 +45,7 @@ Enabling everyone, specially people with hearing disabilities, to experience con
 ---
 ## Elevator Pitch
 
-Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. With a very simple and user-friendly UI, InstantWords makes use of Speech-To-Text technology, providing transcripts directly to your phone, in a wide array of languages, and enabling a brand new audience to enjoy their favourite conferences.
+Conferences are great way of sharing knowledge, sadly not everyone can enjoy them equally. Hearing problems and the language barrier are a major turndown for lots of users. As most of the organized conferences don't have the access to a captioner, we created InstantWords. Our app makes use of Speech-To-Text technology, providing transcripts directly to your phone, in a wide array of languages, and enabling a brand new audience to enjoy their favourite conferences.
 
 ---
 ## Requirements
