@@ -15,13 +15,22 @@ import 'package:translator/translator.dart';
 import 'package:translator/src/langs/language.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:typed_data';
 
-part 'firebase.dart';
-part 'widgets.dart';
-part 'speechtotext.dart';
-part 'login.dart';
-part 'dashboard.dart';
+part 'core/database/firebase.dart';
+part 'core/database/fireauth.dart';
+part 'core/database/authexceptionhandler.dart';
+part 'core/services/language-converter.dart';
+part 'ui/widgets/custom-header-curved-container.dart';
+part 'ui/widgets/custom-picture.dart';
+part 'ui/widgets/custom-app-bar.dart';
+part 'ui/pages/user/user-login.dart';
+part 'ui/pages/user/user-profile.dart';
+part 'ui/pages/user/user-signup.dart';
+part 'ui/pages/conference/conference-create.dart';
+part 'ui/pages/main-page.dart';
+part 'core/speechtotext/speechtotext.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +69,6 @@ class MyApp extends StatelessWidget {
 }
 
 class InstantWordsApp extends StatelessWidget {
-  final FireStore firestore = FireStore();
   final FireStorage storage = FireStorage();
   final translator = GoogleTranslator();
   final SpeechToTextProvider speechProvider =
@@ -86,7 +94,7 @@ class InstantWordsApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'InstantWords Login',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: LoginPage(firestore, storage, speechProvider, translator),
+        home: LoginPage(storage, speechProvider, translator),
       ),
     );
   }
