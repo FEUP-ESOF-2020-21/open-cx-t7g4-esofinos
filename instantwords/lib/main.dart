@@ -17,6 +17,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:typed_data';
+import 'package:date_format/date_format.dart';
 
 part 'core/database/firebase.dart';
 part 'core/database/fireauth.dart';

@@ -107,7 +107,7 @@ class _MainPageState extends State<MainPage> {
       unselectedItemColor: Colors.white.withOpacity(.60),
       selectedFontSize: 14,
       unselectedFontSize: 14,
-	  key: Key('bottom_bar'),
+      key: Key('bottom_bar'),
       onTap: (value) {
         setState(() => {updateSceenWidget(value)});
       },
@@ -152,31 +152,44 @@ class _MainPageState extends State<MainPage> {
               padding: EdgeInsets.only(top: 15, bottom: 30),
               child: Text("Conferences",
                   textScaleFactor: 2,
-                  style: TextStyle(fontWeight: FontWeight.bold))),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
           Expanded(
             child: ListView.builder(
               itemCount: _allResults.length,
               itemBuilder: (BuildContext context, int index) {
-                return new RaisedButton(
-                  onPressed: () => _conferencePressed(
-                      _allResults[index].id.toString(),
-                      _allResults[index]['language']),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: new ListTile(
-                          leading: Icon(Icons.analytics, size: 50),
-                          title: Text(_allResults[index].id.toString(),
-                              textScaleFactor: 2),
-                          subtitle: Text(
-                              LanguageConverter.convertLanguage(
-                                  _allResults[index]['language']),
-                              textScaleFactor: 1.2),
+                return new Padding(
+                  padding: EdgeInsets.all(10),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.all(12),
+                    color: Colors.white,
+                    onPressed: () => _conferencePressed(
+                        _allResults[index].id.toString(),
+                        _allResults[index]['language']),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Text(_allResults[index].id.toString(),
+                              textScaleFactor: 2, style: TextStyle(fontWeight: FontWeight.bold),),
                         ),
-                      ),
-                    ],
+                        Text(formatDate(_allResults[index]['date'].toDate(), [dd, '/', mm, '/', yyyy]),
+                              textScaleFactor: 1.2, style: TextStyle(color: Colors.black54),),
+                        SizedBox(height: 10.0),
+                        Text(_allResults[index]['description'],
+                              textScaleFactor: 1.2),
+                        SizedBox(height: 4.0),
+                        Text(
+                            'Language: ' +
+                                LanguageConverter.convertLanguage(
+                                    _allResults[index]['language']),
+                            textScaleFactor: 1.2, style: TextStyle(color: Colors.black54)),
+                            SizedBox(height: 10.0),
+                      ],
+                    ),
                   ),
                 );
               },
