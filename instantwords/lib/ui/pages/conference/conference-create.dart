@@ -13,12 +13,16 @@ class CreateConferencePage extends StatefulWidget {
 
 class _CreateConferencePageState extends State<CreateConferencePage> {
   final TextEditingController _nameFilter = new TextEditingController();
+  final TextEditingController _descriptionFilter = new TextEditingController();
 
   String _name;
   String _language;
+  DateTime _date;
+  String _description;
 
   _CreateConferencePageState() {
     _nameFilter.addListener(_nameListen);
+    _descriptionFilter.addListener(_descriptionListen);
   }
 
   void _nameListen() {
@@ -26,6 +30,14 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
       _name = "";
     } else {
       _name = _nameFilter.text;
+    }
+  }
+
+  void _descriptionListen() {
+    if (_descriptionFilter.text.isEmpty) {
+      _description = "";
+    } else {
+      _description = _descriptionFilter.text;
     }
   }
 
@@ -69,6 +81,39 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
       ),
     );
 
+    _selectDate(BuildContext context) async {
+      final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _date, 
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2025),
+      );
+      if (picked != null && picked != _date)
+        setState(() {
+          _date = picked;
+        });
+    }
+
+    final date = RaisedButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+      onPressed: () => _selectDate(context), 
+       padding: EdgeInsets.all(16),
+        color: Colors.lightBlue[100],
+        child: Text('Select date', style: TextStyle(color: Colors.white)),
+    );
+
+    final description = TextField(
+      controller: _descriptionFilter,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        hintText: 'Description',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
     final createButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: RaisedButton(
@@ -90,10 +135,16 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
+            Text('New Conference', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20.0),
             name,
             SizedBox(height: 8.0),
             language,
-            SizedBox(height: 48.0),
+            SizedBox(height: 8.0),
+            description,
+            SizedBox(height: 8.0),
+            date, 
+            SizedBox(height: 8.0),
             createButton
           ],
         ),
@@ -109,9 +160,13 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
       _showAlertDialog("Please specify conference name");
     } else if (_language == null) {
       _showAlertDialog("Please specify language");
+    } else if (_description == null) {
+      _showAlertDialog("Please specify description");
+    } else if (_date == null) {
+      _showAlertDialog("Please select date");
     } else {
-      widget._storage.addConference(
-          _name, _language, context.read<FireAuth>().currentUser.uid);
+      widget._storage.addConference(_name, _language,
+          context.read<FireAuth>().currentUser.uid, _date, _description);
       int confIndex = await widget._storage.getConferenceByID(_name);
       Navigator.push(
           context,

@@ -40,11 +40,11 @@ class FireStorage {
     });
   }
 
-  addConference(conferenceName, language, uid) {
+  addConference(conferenceName, language, uid, date, description) {
     FirebaseFirestore.instance
         .collection('conferences')
         .doc(conferenceName)
-        .set({'language': language, 'text': "", 'owner': uid, 'visitors': []})
+        .set({'language': language, 'text': "", 'owner': uid, 'visitors': [], 'date':date, 'description':description})
         .then((value) => print("Conference Added"))
         .catchError((error) => print("Failed to add conference: $error"));
   }
