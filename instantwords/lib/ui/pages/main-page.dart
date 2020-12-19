@@ -173,21 +173,29 @@ class _MainPageState extends State<MainPage> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: Text(_allResults[index].id.toString(),
-                              textScaleFactor: 2, style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text(
+                            _allResults[index].id.toString(),
+                            textScaleFactor: 2,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        Text(formatDate(_allResults[index]['date'].toDate(), [dd, '/', mm, '/', yyyy]),
-                              textScaleFactor: 1.2, style: TextStyle(color: Colors.black54),),
+                        Text(
+                          formatDate(_allResults[index]['date'].toDate(),
+                              [dd, '/', mm, '/', yyyy]),
+                          textScaleFactor: 1.2,
+                          style: TextStyle(color: Colors.black54),
+                        ),
                         SizedBox(height: 10.0),
                         Text(_allResults[index]['description'],
-                              textScaleFactor: 1.2),
+                            textScaleFactor: 1.2),
                         SizedBox(height: 4.0),
                         Text(
                             'Language: ' +
                                 LanguageConverter.convertLanguage(
                                     _allResults[index]['language']),
-                            textScaleFactor: 1.2, style: TextStyle(color: Colors.black54)),
-                            SizedBox(height: 10.0),
+                            textScaleFactor: 1.2,
+                            style: TextStyle(color: Colors.black54)),
+                        SizedBox(height: 10.0),
                       ],
                     ),
                   ),
@@ -224,26 +232,37 @@ class _MainPageState extends State<MainPage> {
             child: ListView.builder(
               itemCount: _resultsList.length,
               itemBuilder: (BuildContext context, int index) {
-                return new RaisedButton(
-                  onPressed: () => _conferencePressed(
-                      _resultsList[index].id.toString(),
-                      _resultsList[index]['language']),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: new ListTile(
-                          leading: Icon(Icons.analytics, size: 50),
-                          title: Text(_resultsList[index].id.toString(),
-                              textScaleFactor: 2),
-                          subtitle: Text(
-                              LanguageConverter.convertLanguage(
-                                  _resultsList[index]['language']),
-                              textScaleFactor: 1.2),
+                return new Padding(
+                  padding: EdgeInsets.all(5),
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    color: Colors.white,
+                    onPressed: () => _conferencePressed(
+                        _resultsList[index].id.toString(),
+                        _resultsList[index]['language']),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Text(
+                            _allResults[index].id.toString(),
+                            textScaleFactor: 2,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                    ],
+                        Text(
+                            'Language: ' +
+                                LanguageConverter.convertLanguage(
+                                    _allResults[index]['language']),
+                            textScaleFactor: 1.2,
+                            style: TextStyle(color: Colors.black54)),
+                        SizedBox(height: 10.0),
+                      ],
+                    ),
                   ),
                 );
               },
