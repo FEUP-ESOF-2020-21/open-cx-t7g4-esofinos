@@ -31,79 +31,72 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildInputFields(),
-            _buildButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
+    final appBar = AppBar(
       title: new Text("Conferences"),
       centerTitle: true,
     );
-  }
 
-  Widget _buildInputFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _nameFilter,
-              decoration: new InputDecoration(labelText: 'Conference Name'),
-            ),
-          ),
-          _buildLanguageDropdown()
-        ],
+    final name = TextField(
+      controller: _nameFilter,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        hintText: 'Conference Name',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
     );
-  }
 
-  Widget _buildLanguageDropdown() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 25),
-          child: Text('Language', textScaleFactor: 1.5),
-        ),
-        Padding(
-            padding: EdgeInsets.only(bottom: 25),
-            child: DropdownButton<String>(
-              onChanged: (selectedVal) => setState(() {
-                _language = selectedVal;
-              }),
-              value: _language,
-              items: widget._speechProvider.locales
-                  .map<DropdownMenuItem<String>>(
-                      (localeName) => DropdownMenuItem<String>(
-                            value: localeName.localeId,
-                            child: Text(localeName.name),
-                          ))
-                  .toList(),
-            ))
-      ],
+    final language = InputDecorator(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+      child: DropdownButton<String>(
+        underline: SizedBox(),
+        isExpanded: true,
+        hint: Text('Language'),
+        onChanged: (selectedVal) => setState(() {
+          _language = selectedVal;
+        }),
+        value: _language,
+        items: widget._speechProvider.locales
+            .map<DropdownMenuItem<String>>(
+                (localeName) => DropdownMenuItem<String>(
+                      value: localeName.localeId,
+                      child: Text(localeName.name),
+                    ))
+            .toList(),
+      ),
     );
-  }
 
-  Widget _buildButton() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new RaisedButton(
-            child: new Text('Create Conference'),
-            onPressed: _createConferencePressed,
-          )
-        ],
+    final createButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: _createConferencePressed,
+        padding: EdgeInsets.all(12),
+        color: Colors.lightBlueAccent,
+        child: Text('Create Conference', style: TextStyle(color: Colors.white)),
+      ),
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: appBar,
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24.0, right: 24.0),
+          children: <Widget>[
+            name,
+            SizedBox(height: 8.0),
+            language,
+            SizedBox(height: 48.0),
+            createButton
+          ],
+        ),
       ),
     );
   }
