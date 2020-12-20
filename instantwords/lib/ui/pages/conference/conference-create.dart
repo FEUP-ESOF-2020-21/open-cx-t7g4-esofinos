@@ -81,27 +81,18 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
       ),
     );
 
-    _selectDate(BuildContext context) async {
-      final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _date, 
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2025),
-      );
-      if (picked != null && picked != _date)
-        setState(() {
-          _date = picked;
-        });
-    }
-
     final date = RaisedButton(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-      onPressed: () => _selectDate(context), 
-       padding: EdgeInsets.all(16),
-        color: Colors.lightBlue[100],
-        child: Text('Select date', style: TextStyle(color: Colors.white)),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      onPressed: () => _selectDate(context),
+      padding: EdgeInsets.all(16),
+      color: Colors.lightBlue[100],
+      child: Text(
+          _date != null
+              ? formatDate(_date, [dd, '/', mm, '/', yyyy])
+              : 'Select date',
+          style: TextStyle(color: Colors.white)),
     );
 
     final description = TextField(
@@ -135,7 +126,8 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
-            Text('New Conference', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+            Text('New Conference',
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
             SizedBox(height: 20.0),
             name,
             SizedBox(height: 8.0),
@@ -143,7 +135,7 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
             SizedBox(height: 8.0),
             description,
             SizedBox(height: 8.0),
-            date, 
+            date,
             SizedBox(height: 8.0),
             createButton
           ],
@@ -178,6 +170,19 @@ class _CreateConferencePageState extends State<CreateConferencePage> {
                   _language,
                   widget.translator)));
     }
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: (_date == null ? DateTime.now() : _date),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != _date)
+      setState(() {
+        _date = picked;
+      });
   }
 
   _showAlertDialog(errorMsg) {
