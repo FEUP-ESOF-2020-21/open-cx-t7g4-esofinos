@@ -183,29 +183,46 @@ class _AccountPageState extends State<AccountPage> {
           return new ListView.builder(
             itemCount: content.length,
             itemBuilder: (BuildContext context, int index) {
-              return new RaisedButton(
-                onPressed: () => _goToConferencePressed(
-                    content[index].id.toString(), content[index]['language']),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: new ListTile(
-                        leading: Icon(Icons.analytics, size: 50),
-                        title: AutoSizeText(
-                          content[index].id.toString(),
-                          style: TextStyle(fontSize: 40),
-                          maxFontSize: 80,
-                          maxLines: 1,
+              return new Padding(
+                padding: EdgeInsets.all(10),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.all(12),
+                  color: Colors.white,
+                  onPressed: () => _goToConferencePressed(
+                      content[index].id.toString(), content[index]['language']),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Text(
+                            content[index].id.toString(),
+                            textScaleFactor: 2,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        subtitle: Text(
-                            LanguageConverter.convertLanguage(
-                                content[index]['language']),
+                        Text(
+                          formatDate(content[index]['date'].toDate(),
+                              [dd, '/', mm, '/', yyyy]),
+                          textScaleFactor: 1.2,
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                        SizedBox(height: 10.0),
+                        Text(content[index]['description'],
                             textScaleFactor: 1.2),
-                      ),
-                    ),
-                  ],
+                        SizedBox(height: 4.0),
+                        Text(
+                            'Language: ' +
+                                LanguageConverter.convertLanguage(
+                                    content[index]['language']),
+                            textScaleFactor: 1.2,
+                            style: TextStyle(color: Colors.black54)),
+                        SizedBox(height: 10.0),
+                    ],
+                  ),
                 ),
               );
             },
@@ -223,24 +240,35 @@ class _AccountPageState extends State<AccountPage> {
           return new ListView.builder(
             itemCount: content.length,
             itemBuilder: (BuildContext context, int index) {
-              return new RaisedButton(
-                onPressed: () {},
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: new ListTile(
-                        leading: Icon(Icons.analytics, size: 50),
-                        title: Text(content[index].id.toString(),
-                            textScaleFactor: 2),
-                        subtitle: Text(
-                            LanguageConverter.convertLanguage(
-                                content[index]['language']),
-                            textScaleFactor: 1.2),
+              return new Padding(
+                padding: EdgeInsets.all(5),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.all(3),
+                  color: Colors.white,
+                  onPressed: () {},
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: Text(
+                          content[index].id.toString(),
+                          textScaleFactor: 2,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                  ],
+                      Text(
+                        formatDate(content[index]['date'].toDate(),
+                            [dd, '/', mm, '/', yyyy]),
+                        textScaleFactor: 1.2,
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      SizedBox(height: 10.0),
+                    ],
+                  ),
                 ),
               );
             },

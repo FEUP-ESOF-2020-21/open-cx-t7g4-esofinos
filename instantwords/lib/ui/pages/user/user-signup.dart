@@ -62,83 +62,105 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ModalProgressHUD(
-        inAsyncCall: isInProgress,
-        child: new Scaffold(
-          appBar: _buildBar(context),
-          body: new Container(
-            padding: EdgeInsets.all(16.0),
-            child: new Column(
-              children: <Widget>[
-                _buildTextFields(),
-                _buildButtons(),
-              ],
-            ),
-          ),
+    final logo = Hero(
+      tag: 'hero',
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: 48.0,
+        child: Image.asset('img/icon.png'),
+      ),
+    );
+
+    final username = TextField(
+      controller: _usernameFilter,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        hintText: 'Username',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
+    final email = TextField(
+      controller: _emailFilter,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        hintText: 'Email',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
+    final password = TextField(
+      controller: _passwordFilter,
+      obscureText: true,
+      decoration: InputDecoration(
+        hintText: 'Password',
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+      ),
+    );
+
+    final uploadButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
+        onPressed: _uploadPressed,
+        padding: EdgeInsets.all(12),
+        color: Colors.lightBlueAccent,
+        child:
+            Text('Upload Profile Image', style: TextStyle(color: Colors.white)),
       ),
     );
-  }
 
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
-      title: new Text("InstantWords Registration"),
-      centerTitle: true,
-    );
-  }
-
-  Widget _buildTextFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _emailFilter,
-              decoration: new InputDecoration(labelText: 'Email'),
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              controller: _passwordFilter,
-              decoration: new InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              controller: _usernameFilter,
-              decoration: new InputDecoration(labelText: 'Username'),
-            ),
-          ),
-        ],
+    final registerButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: _createAccountPressed,
+        padding: EdgeInsets.all(12),
+        color: Colors.lightBlueAccent,
+        child: Text('Register', style: TextStyle(color: Colors.white)),
       ),
     );
-  }
 
-  Widget _buildButtons() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new RaisedButton(
-            child: new Text('Upload Photo'),
-            onPressed: _uploadPressed,
-          ),
-          new RaisedButton(
-            child: new Text('Create an Account'),
-            onPressed: _createAccountPressed,
-          ),
-          new FlatButton(
-            child: new Text('Have an account? Click here to login.'),
-            onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LoginPage(widget._storage,
-                          widget._speechProvider, widget.translator)));
-            },
-          )
-        ],
+    final loginLabel = FlatButton(
+      child: Text(
+        'Already have an account? Tap here to login.',
+        style: TextStyle(color: Colors.black54),
+      ),
+      onPressed: () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LoginPage(widget._storage,
+                    widget._speechProvider, widget.translator)));
+      },
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24.0, right: 24.0),
+          children: <Widget>[
+            logo,
+            SizedBox(height: 48.0),
+            username,
+            SizedBox(height: 8.0),
+            email,
+            SizedBox(height: 8.0),
+            password,
+            uploadButton,
+            registerButton,
+            loginLabel
+          ],
+        ),
       ),
     );
   }
