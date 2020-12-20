@@ -423,6 +423,38 @@ Implemented Unit Tests:
 - Valid Create Conference page:
   * Pessing the "Create" button it must go to the "Create Conference" page
   
+Funtional Tests:
+- Speaker
+  - The user inputs the email 'teste@gmail.com' and the password '1234567890' and clicks the login button
+  - The dashboard is shown
+  - The user clicks the 'Create' button
+  - The user inputs 'TestConference' in the conference name and 'English (United States)' in the language (the one he will be talking in the conference)
+  - The conference with name 'TestConference' and language 'EN-US' is inserted into the database
+  - The conference speaker page is shown
+  - The speaker clicks the 'QR' button
+  - The QR code is shown to be scanned by the attendees
+  - The speaker clicks the 'Start Speaking' button
+  - Speaker says 'Welcome to Test Conference'
+  - The speaker clicks the 'Stop' button to stop speaking
+ 
+- Attendee
+  - The user inputs the email 'teste2@gmail.com' and the password '1234567890' and clicks the login button
+  - The dashboard is shown
+  - The user joins the conference 'TestConference'
+    - Using QR code
+      - The user clicks the 'QR' button in the main page
+      - The user scans the QR code shown by the speaker
+    - Using the search bar
+      - The user clicks the 'Search' button in the main page
+      - The user inputs 'Test' in the search bar
+      - The conference 'TestConference' is shown in the results
+      - The user clicks the conference 'TestConference'
+  - The conference page is shown
+  - The attendee chooses 'English (United States)' as language
+  - The text 'Welcome to Test Conference' is shown
+  - The attendee chooses 'Portuguese (Portugal)' as language
+  - The text 'Bem-vindos à conferência de teste' is shown  
+  
 There are still some cases to be tested and improvements for the future. They are the following:
   * Testing whether the QR code is correctly interpreted
   * Create accounts without populating the database
